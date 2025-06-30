@@ -376,8 +376,9 @@
                     addRealtimeUpdate('Connected to Brand Intelligence Network', 'system');
                     
                     const data = await response.json();
-                    if (data.state) {
+                    if (data.success && data.state) {
                         loadBrandState(data.state);
+                        addRealtimeUpdate('Connected to Brand Intelligence API', 'system');
                     }
                     
                     // Start polling for updates every 2 seconds
@@ -400,14 +401,19 @@
                 const response = await fetch('/api/brand/demo-brand/state');
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.state && data.state.lastUpdate) {
-                        const lastUpdate = new Date(data.state.lastUpdate);
-                        const timeSinceUpdate = Date.now() - lastUpdate.getTime();
+                    if (data.success && data.state) {
+                        // Update brand data with latest from API
+                        brandData = data.state;
                         
-                        // Only update if data is recent (within last 10 seconds)
-                        if (timeSinceUpdate < 10000) {
+                        // Update 3D visualization
+                        if (data.state.dimensions) {
                             updateDimensionsInScene(data.state.dimensions);
-                            addRealtimeUpdate('Brand dimensions updated', 'data');
+                            addRealtimeUpdate('Brand dimensions updated from API', 'data');
+                        }
+                        
+                        // Update cognitive state visualization
+                        if (data.state.cognitiveState) {
+                            updateCognitiveVisualization(data.state.cognitiveState);
                         }
                     }
                 }
@@ -1165,6 +1171,39 @@
         function toggleConnections() { console.log('Toggle connections'); }
         function toggleGlassMode() { console.log('Toggle glass mode'); }
         function resetCamera() { console.log('Reset camera'); }
+        
+        // Initialize the application when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing SUBFRACTURE Brand Intelligence...');
+            
+            // Start with WebSocket/HTTP connection
+            initializeWebSocket();
+            
+            // Load Three.js and start 3D visualization
+            loadThreeJS().catch(error => {
+                console.error('❌ Failed to load Three.js:', error);
+                showFallback();
+            });
+        });
+        
+        // Fallback for older browsers
+        if (document.readyState === 'loading') {
+            // DOM still loading
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            // DOM already loaded
+            initializeApp();
+        }
+        
+        function initializeApp() {
+            console.log('📱 App initialization triggered');
+            if (typeof initializeWebSocket === 'function') {
+                initializeWebSocket();
+            }
+            if (typeof loadThreeJS === 'function') {
+                loadThreeJS().catch(showFallback);
+            }
+        }
     </script>
 </body>
 </html>
