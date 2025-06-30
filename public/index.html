@@ -287,7 +287,7 @@
         // Check server status
         async function checkServerStatus() {
             try {
-                const response = await fetch('/api/websocket-server/brand/test/state');
+                const response = await fetch('/api/brand/demo-brand/state');
                 if (response.ok) {
                     document.getElementById('server-status').classList.add('online');
                     document.getElementById('status-text').textContent = 'Real-time server online - all features available';
@@ -315,7 +315,7 @@
                 await new Promise(resolve => setTimeout(resolve, 3000));
                 
                 // Run the actual simulation (this will send data to the WebSocket)
-                const response = await fetch('/api/websocket-server/workshop/process', {
+                const response = await fetch('/api/workshop/process', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

@@ -369,7 +369,7 @@
                 console.log('🔗 Connecting to SUBFRACTURE Brand Intelligence API');
                 
                 // Initial connection test
-                const response = await fetch('/api/websocket-server/brand/demo-brand/state');
+                const response = await fetch('/api/brand/demo-brand/state');
                 if (response.ok) {
                     isConnected = true;
                     updateConnectionStatus(true);
@@ -397,7 +397,7 @@
             if (!isConnected) return;
             
             try {
-                const response = await fetch('/api/websocket-server/brand/demo-brand/state');
+                const response = await fetch('/api/brand/demo-brand/state');
                 if (response.ok) {
                     const data = await response.json();
                     if (data.state && data.state.lastUpdate) {
