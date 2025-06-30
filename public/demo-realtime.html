@@ -342,8 +342,8 @@
         let morphingMode = true;
         let connectionMode = true;
         let envMap;
-        let raycaster = new THREE.Raycaster();
-        let mouse = new THREE.Vector2();
+        let raycaster = null; // Initialize after Three.js loads
+        let mouse = null; // Initialize after Three.js loads
         let selectedDimension = null;
         let hoveredDimension = null;
         
@@ -829,6 +829,11 @@
                 if (!testBasicThreeJS()) {
                     throw new Error('Basic Three.js test failed - aborting initialization');
                 }
+                
+                // Initialize Three.js dependent variables
+                raycaster = new THREE.Raycaster();
+                mouse = new THREE.Vector2();
+                console.log('✅ Three.js dependent variables initialized');
                 
                 // Scene setup
                 scene = new THREE.Scene();
