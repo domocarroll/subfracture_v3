@@ -1,31 +1,15 @@
 {
-  "version": 2,
-  "name": "subfracture-brand-intelligence",
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/demo",
-      "dest": "/demo-realtime.html"
-    },
-    {
-      "src": "/",
-      "dest": "/index.html"
-    }
-  ],
   "functions": {
     "api/**/*.js": {
       "maxDuration": 30
     }
   },
+  "rewrites": [
+    {
+      "source": "/demo",
+      "destination": "/demo-realtime.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

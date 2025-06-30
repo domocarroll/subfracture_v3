@@ -1,24 +1,23 @@
 {
-  "name": "subfracture-client-presentation",
+  "name": "subfracture-brand-intelligence",
   "version": "2.0.0",
-  "description": "SUBFRACTURE - Living Brand Universe 3D Visualization with Real-Time Intelligence",
-  "main": "src/websocket-server.js",
+  "description": "SUBFRACTURE - Real-Time Brand Intelligence Platform with 3D Visualization",
+  "main": "index.html",
   "scripts": {
     "start": "node src/websocket-server.js",
     "dev": "nodemon src/websocket-server.js",
-    "static": "python3 -m http.server 8080",
-    "build": "echo 'Static build complete'",
+    "build": "echo 'Static build complete - no build step required'",
     "install-deps": "npm install"
   },
   "keywords": [
     "subfracture",
-    "brand-universe",
+    "brand-intelligence",
     "3d-visualization",
     "threejs",
-    "living-brands",
-    "websocket",
     "real-time",
-    "ai-integration"
+    "websocket",
+    "serverless",
+    "vercel"
   ],
   "author": "SUBFRACTURE",
   "license": "PROPRIETARY",
