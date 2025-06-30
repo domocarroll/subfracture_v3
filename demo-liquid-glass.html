@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUBFRACTURE - Liquid Glass Brand Universe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f0f 100%);
+            overflow: hidden;
+            color: white;
+        }
+        
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            background: linear-gradient(45deg, #64ffda, #1de9b6, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(100, 255, 218, 0.3);
+        }
+        
+        .tagline {
+            font-size: 14px;
+            opacity: 0.9;
+            color: #64ffda;
+            font-weight: 300;
+        }
+        
+        .info-panel {
+            position: absolute;
+            left: 30px;
+            top: 120px;
+            bottom: 30px;
+            width: 380px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            overflow-y: auto;
+            z-index: 50;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .metrics-panel {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            z-index: 50;
+            min-width: 220px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(100, 255, 218, 0.3);
+            background: linear-gradient(45deg, #64ffda, #1de9b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.1), rgba(29, 233, 182, 0.05));
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.2), rgba(29, 233, 182, 0.1));
+            border-color: rgba(100, 255, 218, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(100, 255, 218, 0.2);
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+            color: #64ffda;
+        }
+        
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(100, 255, 218, 0.3);
+        }
+        
+        .controls {
+            position: absolute;
+            top: 120px;
+            right: 40px;
+            z-index: 50;
+        }
+        
+        .control-button {
+            display: block;
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.1), rgba(29, 233, 182, 0.05));
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-button:hover {
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.2), rgba(29, 233, 182, 0.1));
+            border-color: rgba(100, 255, 218, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.3);
+        }
+        
+        .control-button.active {
+            background: linear-gradient(135deg, #64ffda, #1de9b6);
+            color: #000;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(100, 255, 218, 0.4);
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px 50px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+        
+        .debug-info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(100, 255, 218, 0.9);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 200;
+            display: none;
+            max-width: 500px;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(100, 255, 218, 0.4);
+        }
+        
+        .brand-description {
+            line-height: 1.7;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .dimensions-list {
+            margin-top: 25px;
+        }
+        
+        .dimension-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .dimension-item:hover {
+            padding-left: 10px;
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+        
+        .dimension-name {
+            font-size: 13px;
+            text-transform: capitalize;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .dimension-score {
+            font-weight: 700;
+            color: #64ffda;
+            font-size: 14px;
+            text-shadow: 0 2px 8px rgba(100, 255, 218, 0.3);
+        }
+        
+        .glass-effect {
+            animation: glassShimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes glassShimmer {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="loading" id="loading">
+            <div>Initializing Liquid Glass Universe...</div>
+            <div style="font-size: 14px; margin-top: 15px; opacity: 0.7;">Calibrating quantum brand resonance...</div>
+        </div>
+        
+        <div class="debug-info" id="debug-info">
+            Debug: Starting crystalline loading system...
+        </div>
+        
+        <div class="header">
+            <div>
+                <div class="logo">SUBFRACTURE</div>
+                <div class="tagline">Liquid Glass Brand Ecosystems</div>
+            </div>
+            <div class="tagline">AI-Powered Agency Transformation</div>
+        </div>
+        
+        <div class="info-panel glass-effect">
+            <div class="section-title">EcoFlow Technologies</div>
+            <div class="brand-description">
+                A revolutionary sustainable technology brand that combines environmental responsibility with cutting-edge innovation. This living brand ecosystem evolves continuously while maintaining perfect coherence across all dimensions through quantum glass resonance.
+            </div>
+            
+            <div class="section-title">Brand Dimensions</div>
+            <div class="dimensions-list">
+                <div class="dimension-item">
+                    <span class="dimension-name">Market Position</span>
+                    <span class="dimension-score">85%</span>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-name">Value Proposition</span>
+                    <span class="dimension-score">78%</span>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-name">Brand Narrative</span>
+                    <span class="dimension-score">82%</span>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-name">Emotional Landscape</span>
+                    <span class="dimension-score">90%</span>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-name">Visual Identity</span>
+                    <span class="dimension-score">75%</span>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-name">Digital Presence</span>
+                    <span class="dimension-score">88%</span>
+                </div>
+                <div class="dimension-item">
+                    <span class="dimension-name">Innovation Capacity</span>
+                    <span class="dimension-score">92%</span>
+                </div>
+            </div>
+            
+            <div class="section-title" style="margin-top: 25px;">Quantum Forces</div>
+            <div style="font-size: 14px; opacity: 0.8; color: rgba(255, 255, 255, 0.8);">
+                • Authenticity Resonance (90% force)<br>
+                • Innovation Flux (85% force)<br>
+                • Community Cohesion (88% force)<br>
+                • Experience Harmonics (82% force)
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-button active" onclick="toggleGravityForces()">Quantum Forces</button>
+            <button class="control-button" onclick="toggleAnimation()">Liquid Flow</button>
+            <button class="control-button active" onclick="toggleMorphing()">Morphing</button>
+            <button class="control-button active" onclick="toggleConnections()">Connections</button>
+            <button class="control-button active" onclick="toggleGlassMode()">Glass Mode</button>
+            <button class="control-button" onclick="resetCamera()">Reset View</button>
+        </div>
+        
+        <div class="metrics-panel glass-effect">
+            <div class="section-title">Brand Resonance</div>
+            <div class="metric-card">
+                <div class="metric-label">Glass Coherence</div>
+                <div class="metric-value">94%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Quantum Flux</div>
+                <div class="metric-value">87%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Liquid Viscosity</div>
+                <div class="metric-value">High</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced debug logging
+        function debugLog(message) {
+            console.log('SUBFRACTURE Liquid Glass:', message);
+            const debugInfo = document.getElementById('debug-info');
+            if (debugInfo) {
+                debugInfo.textContent = message;
+                debugInfo.style.display = 'block';
+                setTimeout(() => {
+                    debugInfo.style.display = 'none';
+                }, 4000);
+            }
+        }
+        
+        // Update loading status
+        function updateLoading(message) {
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.innerHTML = `
+                    <div>Initializing Liquid Glass Universe...</div>
+                    <div style="font-size: 14px; margin-top: 15px; opacity: 0.7;">${message}</div>
+                `;
+            }
+        }
+        
+        // Global variables
+        let scene, camera, renderer, controls;
+        let dimensions = [];
+        let gravityRules = [];
+        let showGravityForces = true;
+        let animationEnabled = true;
+        let glassMode = true; // Enable liquid glass by default
+        let morphingMode = true; // Enable dynamic morphing by default
+        let connectionMode = true; // Enable flowing connections by default
+        let envMap; // Environment map for reflections
+        let connections = []; // Store connection objects
+        let raycaster = new THREE.Raycaster();
+        let mouse = new THREE.Vector2();
+        let selectedDimension = null;
+        let hoveredDimension = null;
+        
+        // Enhanced brand data with liquid glass properties
+        const brandData = {
+            name: "EcoFlow Technologies",
+            dimensions: {
+                market_position: { 
+                    depth: 0.85, 
+                    coherence: 0.92, 
+                    color: 0x2196F3,
+                    viscosity: 0.8,
+                    refraction: 1.52
+                },
+                value_proposition: { 
+                    depth: 0.78, 
+                    coherence: 0.88, 
+                    color: 0x4CAF50,
+                    viscosity: 0.9,
+                    refraction: 1.48
+                },
+                brand_narrative: { 
+                    depth: 0.82, 
+                    coherence: 0.75, 
+                    color: 0xFF9800,
+                    viscosity: 0.6,
+                    refraction: 1.45
+                },
+                emotional_landscape: { 
+                    depth: 0.90, 
+                    coherence: 0.85, 
+                    color: 0xE91E63,
+                    viscosity: 0.95,
+                    refraction: 1.55
+                },
+                visual_identity: { 
+                    depth: 0.75, 
+                    coherence: 0.95, 
+                    color: 0x9C27B0,
+                    viscosity: 0.7,
+                    refraction: 1.49
+                },
+                digital_presence: { 
+                    depth: 0.88, 
+                    coherence: 0.78, 
+                    color: 0x607D8B,
+                    viscosity: 0.8,
+                    refraction: 1.51
+                },
+                innovation_capacity: { 
+                    depth: 0.92, 
+                    coherence: 0.88, 
+                    color: 0xFF5722,
+                    viscosity: 0.85,
+                    refraction: 1.53
+                }
+            },
+            gravityRules: [
+                { name: "Authenticity", force: 0.9, color: 0xff6b6b, resonance: 0.95 },
+                { name: "Innovation", force: 0.85, color: 0x4ecdc4, resonance: 0.88 },
+                { name: "Community", force: 0.88, color: 0x45b7d1, resonance: 0.92 },
+                { name: "Experience", force: 0.82, color: 0xf9ca24, resonance: 0.87 }
+            ]
+        };
+        
+        // Crystalline loading system
+        async function loadThreeJS() {
+            debugLog('Starting quantum glass initialization...');
+            updateLoading('Loading quantum glass engine...');
+            
+            try {
+                await loadThreeWithFallbacks();
+                debugLog('Three.js quantum engine loaded!');
+                
+                await loadOrbitControlsWithFallbacks();
+                debugLog('Orbital resonance controls loaded!');
+                
+                // Initialize the liquid glass universe
+                init();
+                
+            } catch (error) {
+                debugLog(`Quantum initialization failed: ${error.message}`);
+                showFallback();
+            }
+        }
+        
+        async function loadThreeWithFallbacks() {
+            const threeSources = [
+                'https://unpkg.com/three@0.147.0/build/three.min.js',
+                'https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/three.js/r147/three.min.js'
+            ];
+            
+            for (let i = 0; i < threeSources.length; i++) {
+                try {
+                    debugLog(`Trying quantum source ${i + 1}/${threeSources.length}...`);
+                    await loadScript(threeSources[i]);
+                    
+                    if (typeof THREE !== 'undefined') {
+                        debugLog(`Quantum engine loaded from source ${i + 1}`);
+                        return;
+                    }
+                } catch (error) {
+                    debugLog(`Source ${i + 1} failed: ${error.message}`);
+                }
+            }
+            throw new Error('All quantum sources failed');
+        }
+        
+        async function loadOrbitControlsWithFallbacks() {
+            const controlsSources = [
+                'https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js',
+                'https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/three.js/r147/OrbitControls.js'
+            ];
+            
+            for (let i = 0; i < controlsSources.length; i++) {
+                try {
+                    debugLog(`Trying orbital controls ${i + 1}/${controlsSources.length}...`);
+                    await loadScript(controlsSources[i]);
+                    
+                    if (typeof THREE.OrbitControls !== 'undefined') {
+                        debugLog(`Orbital controls loaded from source ${i + 1}`);
+                        return;
+                    }
+                } catch (error) {
+                    debugLog(`Controls source ${i + 1} failed: ${error.message}`);
+                }
+            }
+            throw new Error('All orbital control sources failed');
+        }
+        
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+        
+        function showFallback() {
+            debugLog('Showing quantum fallback experience');
+            updateLoading('Creating quantum fallback...');
+            
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                const container = document.getElementById('container');
+                const fallback = document.createElement('div');
+                fallback.innerHTML = `
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        text-align: center;
+                        z-index: 10;
+                    ">
+                        <div style="font-size: 48px; margin-bottom: 20px;">💎</div>
+                        <div style="font-size: 24px; margin-bottom: 10px; color: #64ffda;">EcoFlow Technologies</div>
+                        <div style="font-size: 18px; opacity: 0.8; margin-bottom: 20px;">Quantum Brand Universe</div>
+                        <div style="font-size: 14px; opacity: 0.6;">
+                            Liquid glass visualization temporarily crystallizing<br>
+                            View brand resonance metrics in the side panel →
+                        </div>
+                    </div>
+                `;
+                container.appendChild(fallback);
+            }, 2000);
+        }
+        
+        function init() {
+            debugLog('Initializing liquid glass universe...');
+            updateLoading('Calibrating quantum resonance...');
+            
+            try {
+                // Scene setup with enhanced background
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x000428);
+                
+                // Enhanced camera setup
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 6, 12);
+                
+                // Enhanced renderer setup
+                renderer = new THREE.WebGLRenderer({ 
+                    antialias: true,
+                    alpha: true,
+                    powerPreference: "high-performance"
+                });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.2;
+                renderer.outputEncoding = THREE.sRGBEncoding;
+                document.getElementById('container').appendChild(renderer.domElement);
+                
+                // Create HDR environment map for realistic reflections
+                createEnvironmentMap();
+                
+                // Enhanced controls
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.maxDistance = 25;
+                controls.minDistance = 8;
+                controls.enablePan = false;
+                
+                // Add mouse interaction
+                setupMouseInteraction();
+                
+                // Advanced lighting setup
+                setupAdvancedLighting();
+                
+                // Create liquid glass brand universe
+                createLiquidGlassBrandUniverse();
+                
+                // Start animation
+                animate();
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                debugLog('Liquid glass universe materialized successfully!');
+                
+            } catch (error) {
+                debugLog(`Quantum initialization failed: ${error.message}`);
+                showFallback();
+            }
+        }
+        
+        function createEnvironmentMap() {
+            // Create HDR environment map for realistic reflections
+            const pmremGenerator = new THREE.PMREMGenerator(renderer);
+            pmremGenerator.compileEquirectangularShader();
+            
+            // Create synthetic HDR environment with gradient
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 256;
+            const context = canvas.getContext('2d');
+            
+            // Create HDR-like gradient for better reflections
+            const gradient = context.createLinearGradient(0, 0, 0, 256);
+            gradient.addColorStop(0, '#001122');    // Dark night sky
+            gradient.addColorStop(0.3, '#003366');  // Horizon
+            gradient.addColorStop(0.7, '#64ffda');  // Quantum glow
+            gradient.addColorStop(1, '#000428');    // Deep space
+            
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, 512, 256);
+            
+            // Add quantum energy sparkles
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * 512;
+                const y = Math.random() * 256;
+                const size = Math.random() * 3 + 1;
+                
+                context.fillStyle = `rgba(100, 255, 218, ${Math.random() * 0.8 + 0.2})`;
+                context.beginPath();
+                context.arc(x, y, size, 0, Math.PI * 2);
+                context.fill();
+            }
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+            texture.encoding = THREE.sRGBEncoding;
+            
+            envMap = pmremGenerator.fromEquirectangular(texture).texture;
+            scene.environment = envMap;
+            
+            pmremGenerator.dispose();
+        }
+        
+        function setupAdvancedLighting() {
+            // Enhanced ambient lighting with color temperature
+            const ambientLight = new THREE.HemisphereLight(0x64ffda, 0x000428, 0.6);
+            ambientLight.position.set(0, 50, 0);
+            scene.add(ambientLight);
+            
+            // Primary directional light (quantum sun)
+            const sunLight = new THREE.DirectionalLight(0xffffff, 1.8);
+            sunLight.position.set(15, 25, 10);
+            sunLight.castShadow = true;
+            sunLight.shadow.mapSize.width = 4096;
+            sunLight.shadow.mapSize.height = 4096;
+            sunLight.shadow.camera.near = 0.1;
+            sunLight.shadow.camera.far = 100;
+            sunLight.shadow.camera.left = -20;
+            sunLight.shadow.camera.right = 20;
+            sunLight.shadow.camera.top = 20;
+            sunLight.shadow.camera.bottom = -20;
+            sunLight.shadow.bias = -0.0001;
+            scene.add(sunLight);
+            
+            // Quantum accent lights for glass refraction
+            const accentLight1 = new THREE.PointLight(0x64ffda, 1.2, 40);
+            accentLight1.position.set(-18, 12, -12);
+            accentLight1.castShadow = true;
+            accentLight1.shadow.mapSize.width = 1024;
+            accentLight1.shadow.mapSize.height = 1024;
+            scene.add(accentLight1);
+            
+            const accentLight2 = new THREE.PointLight(0x1de9b6, 1.0, 35);
+            accentLight2.position.set(18, -10, 12);
+            accentLight2.castShadow = true;
+            accentLight2.shadow.mapSize.width = 1024;
+            accentLight2.shadow.mapSize.height = 1024;
+            scene.add(accentLight2);
+            
+            const accentLight3 = new THREE.PointLight(0x00bcd4, 0.8, 30);
+            accentLight3.position.set(0, -15, -20);
+            scene.add(accentLight3);
+            
+            // Volumetric rim lighting for dramatic effect
+            const rimLight1 = new THREE.SpotLight(0x64ffda, 1.5, 60, Math.PI / 8, 0.2);
+            rimLight1.position.set(0, 30, 0);
+            rimLight1.target.position.set(0, 0, 0);
+            rimLight1.castShadow = true;
+            rimLight1.shadow.mapSize.width = 2048;
+            rimLight1.shadow.mapSize.height = 2048;
+            scene.add(rimLight1);
+            scene.add(rimLight1.target);
+            
+            // Side rim lights for edge definition
+            const rimLight2 = new THREE.SpotLight(0x1de9b6, 0.8, 40, Math.PI / 6, 0.3);
+            rimLight2.position.set(-25, 10, 0);
+            rimLight2.target.position.set(0, 0, 0);
+            scene.add(rimLight2);
+            scene.add(rimLight2.target);
+            
+            const rimLight3 = new THREE.SpotLight(0x00bcd4, 0.8, 40, Math.PI / 6, 0.3);
+            rimLight3.position.set(25, 10, 0);
+            rimLight3.target.position.set(0, 0, 0);
+            scene.add(rimLight3);
+            scene.add(rimLight3.target);
+            
+            // Subsurface scattering simulation with colored lights
+            const subLight1 = new THREE.PointLight(0xff6b6b, 0.4, 15);
+            subLight1.position.set(0, 0, 8);
+            scene.add(subLight1);
+            
+            const subLight2 = new THREE.PointLight(0x4ecdc4, 0.4, 15);
+            subLight2.position.set(0, 0, -8);
+            scene.add(subLight2);
+            
+            // Store lights for animation
+            window.sceneLights = {
+                accent1: accentLight1,
+                accent2: accentLight2,
+                accent3: accentLight3,
+                rim1: rimLight1,
+                rim2: rimLight2,
+                rim3: rimLight3,
+                sub1: subLight1,
+                sub2: subLight2
+            };
+        }
+        
+        function createMorphingGeometry(baseRadius, data) {
+            // Create a highly detailed sphere for smooth morphing
+            const segments = Math.floor(32 + data.coherence * 32); // 32-64 segments based on coherence
+            const geometry = new THREE.SphereGeometry(baseRadius, segments, segments);
+            
+            // Add custom attributes for morphing
+            const positionAttribute = geometry.attributes.position;
+            const vertexCount = positionAttribute.count;
+            
+            // Create noise-based morphing data
+            const morphingData = new Float32Array(vertexCount * 3);
+            const originalPositions = positionAttribute.array.slice();
+            
+            for (let i = 0; i < vertexCount; i++) {
+                const i3 = i * 3;
+                const x = originalPositions[i3];
+                const y = originalPositions[i3 + 1];
+                const z = originalPositions[i3 + 2];
+                
+                // Generate Perlin-like noise for organic deformation
+                const noiseX = Math.sin(x * 3 + data.viscosity * 10) * Math.cos(y * 2);
+                const noiseY = Math.cos(y * 4 + data.refraction * 5) * Math.sin(z * 3);
+                const noiseZ = Math.sin(z * 2 + data.depth * 8) * Math.cos(x * 4);
+                
+                morphingData[i3] = noiseX;
+                morphingData[i3 + 1] = noiseY;
+                morphingData[i3 + 2] = noiseZ;
+            }
+            
+            // Store morphing data as custom attribute
+            geometry.setAttribute('morphingNoise', new THREE.BufferAttribute(morphingData, 3));
+            geometry.userData = {
+                originalPositions: originalPositions,
+                coherence: data.coherence,
+                viscosity: data.viscosity,
+                refraction: data.refraction
+            };
+            
+            return geometry;
+        }
+        
+        function createFlowingConnections() {
+            // Define dimension relationships based on brand strategy
+            const dimensionRelationships = [
+                // High coherence connections (strong relationships)
+                { from: 'market_position', to: 'value_proposition', strength: 0.9, type: 'strategic' },
+                { from: 'brand_narrative', to: 'emotional_landscape', strength: 0.85, type: 'experiential' },
+                { from: 'visual_identity', to: 'digital_presence', strength: 0.8, type: 'implementation' },
+                { from: 'innovation_capacity', to: 'market_position', strength: 0.75, type: 'competitive' },
+                
+                // Medium coherence connections
+                { from: 'value_proposition', to: 'brand_narrative', strength: 0.65, type: 'messaging' },
+                { from: 'emotional_landscape', to: 'visual_identity', strength: 0.6, type: 'aesthetic' },
+                { from: 'digital_presence', to: 'innovation_capacity', strength: 0.55, type: 'technological' },
+            ];
+            
+            dimensionRelationships.forEach((relationship, index) => {
+                createFlowingConnection(relationship, index);
+            });
+        }
+        
+        function createFlowingConnection(relationship, index) {
+            const fromDimension = dimensions.find(d => 
+                d.children[0]?.userData.name === relationship.from
+            );
+            const toDimension = dimensions.find(d => 
+                d.children[0]?.userData.name === relationship.to
+            );
+            
+            if (!fromDimension || !toDimension) return;
+            
+            const connectionGroup = new THREE.Group();
+            
+            // Create curved path between dimensions
+            const fromPos = fromDimension.position;
+            const toPos = toDimension.position;
+            
+            // Calculate control points for smooth curve
+            const midPoint = new THREE.Vector3().addVectors(fromPos, toPos).multiplyScalar(0.5);
+            const distance = fromPos.distanceTo(toPos);
+            
+            // Add curve variation based on relationship type
+            const curveHeight = relationship.strength * distance * 0.3;
+            const controlPoint1 = new THREE.Vector3(
+                midPoint.x + (Math.random() - 0.5) * distance * 0.2,
+                midPoint.y + curveHeight,
+                midPoint.z + (Math.random() - 0.5) * distance * 0.2
+            );
+            
+            // Create flowing tube geometry
+            const curve = new THREE.CatmullRomCurve3([
+                fromPos.clone(),
+                controlPoint1,
+                toPos.clone()
+            ]);
+            
+            const tubeGeometry = new THREE.TubeGeometry(
+                curve, 
+                32, // segments
+                relationship.strength * 0.02, // radius
+                8, // radial segments
+                false
+            );
+            
+            // Material based on relationship type
+            const connectionColors = {
+                strategic: 0x64ffda,
+                experiential: 0x1de9b6,
+                implementation: 0x00bcd4,
+                competitive: 0xff6b6b,
+                messaging: 0x4ecdc4,
+                aesthetic: 0x45b7d1,
+                technological: 0xf9ca24
+            };
+            
+            const tubeMaterial = new THREE.MeshPhysicalMaterial({
+                color: connectionColors[relationship.type] || 0x64ffda,
+                transparent: true,
+                opacity: 0.4 * relationship.strength,
+                transmission: 0.8,
+                thickness: 0.1,
+                roughness: 0,
+                metalness: 0,
+                ior: 1.4,
+                emissive: connectionColors[relationship.type] || 0x64ffda,
+                emissiveIntensity: 0.1 * relationship.strength
+            });
+            
+            const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+            connectionGroup.add(tube);
+            
+            // Create flowing particles along the connection
+            createFlowingParticles(connectionGroup, curve, relationship);
+            
+            connectionGroup.userData = {
+                relationship: relationship,
+                curve: curve,
+                fromDimension: fromDimension,
+                toDimension: toDimension,
+                type: 'connection'
+            };
+            
+            scene.add(connectionGroup);
+            connections.push(connectionGroup);
+        }
+        
+        function createFlowingParticles(connectionGroup, curve, relationship) {
+            const particleCount = Math.floor(relationship.strength * 8) + 3;
+            const particles = [];
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particleGeometry = new THREE.SphereGeometry(0.015, 8, 8);
+                const particleMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x64ffda,
+                    transparent: true,
+                    opacity: 0.8,
+                    emissive: 0x64ffda,
+                    emissiveIntensity: 0.3
+                });
+                
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                
+                // Set initial position along curve
+                const t = i / particleCount;
+                const position = curve.getPoint(t);
+                particle.position.copy(position);
+                
+                particle.userData = {
+                    curvePosition: t,
+                    speed: 0.3 + relationship.strength * 0.2 + Math.random() * 0.1,
+                    type: 'particle'
+                };
+                
+                connectionGroup.add(particle);
+                particles.push(particle);
+            }
+            
+            connectionGroup.userData.particles = particles;
+        }
+        
+        function updateFlowingConnections(time) {
+            connections.forEach((connectionGroup, groupIndex) => {
+                const relationship = connectionGroup.userData.relationship;
+                const curve = connectionGroup.userData.curve;
+                const particles = connectionGroup.userData.particles;
+                
+                if (!particles) return;
+                
+                // Update particle positions along the curve
+                particles.forEach((particle, particleIndex) => {
+                    const userData = particle.userData;
+                    
+                    // Update curve position
+                    userData.curvePosition += userData.speed * 0.01;
+                    
+                    // Loop particle when it reaches the end
+                    if (userData.curvePosition > 1) {
+                        userData.curvePosition = 0;
+                    }
+                    
+                    // Get position on curve
+                    const position = curve.getPoint(userData.curvePosition);
+                    particle.position.copy(position);
+                    
+                    // Add organic movement
+                    const wiggle = Math.sin(time * 2 + particleIndex + groupIndex) * 0.02;
+                    particle.position.y += wiggle;
+                    
+                    // Pulse opacity based on movement
+                    const pulse = 0.6 + Math.sin(time * 4 + userData.curvePosition * Math.PI * 2) * 0.3;
+                    particle.material.opacity = pulse * relationship.strength;
+                    particle.material.emissiveIntensity = pulse * 0.5;
+                });
+                
+                // Animate tube material
+                const tube = connectionGroup.children[0];
+                if (tube && tube.material) {
+                    const pulseIntensity = 0.05 + Math.sin(time * 1.5 + groupIndex) * 0.03;
+                    tube.material.emissiveIntensity = pulseIntensity * relationship.strength;
+                    
+                    // Animate opacity
+                    const baseOpacity = 0.4 * relationship.strength;
+                    tube.material.opacity = baseOpacity + Math.sin(time * 0.8 + groupIndex) * 0.1;
+                }
+            });
+        }
+        
+        function updateMorphingGeometry(mesh, time) {
+            const geometry = mesh.geometry;
+            const userData = geometry.userData;
+            const meshData = mesh.userData;
+            
+            if (!userData.originalPositions || !meshData.morphingSpeed) return;
+            
+            const positionAttribute = geometry.attributes.position;
+            const morphingAttribute = geometry.attributes.morphingNoise;
+            const originalPositions = userData.originalPositions;
+            const morphingNoise = morphingAttribute.array;
+            
+            const amplitude = meshData.morphingAmplitude;
+            const speed = meshData.morphingSpeed;
+            const coherence = userData.coherence;
+            
+            // Apply organic deformation based on brand properties
+            for (let i = 0; i < positionAttribute.count; i++) {
+                const i3 = i * 3;
+                
+                // Get original position
+                const origX = originalPositions[i3];
+                const origY = originalPositions[i3 + 1];
+                const origZ = originalPositions[i3 + 2];
+                
+                // Get noise values
+                const noiseX = morphingNoise[i3];
+                const noiseY = morphingNoise[i3 + 1];
+                const noiseZ = morphingNoise[i3 + 2];
+                
+                // Calculate organic deformation
+                const timeOffset = time * speed;
+                const deformX = amplitude * noiseX * Math.sin(timeOffset + origY * 0.5);
+                const deformY = amplitude * noiseY * Math.cos(timeOffset + origZ * 0.7);
+                const deformZ = amplitude * noiseZ * Math.sin(timeOffset + origX * 0.6);
+                
+                // Apply viscosity-based flowing effect
+                const viscosityFlow = userData.viscosity * 0.1;
+                const flowX = viscosityFlow * Math.sin(time * 0.8 + origY * 2);
+                const flowY = viscosityFlow * Math.cos(time * 0.6 + origZ * 2);
+                const flowZ = viscosityFlow * Math.sin(time * 0.9 + origX * 2);
+                
+                // Update vertex positions with coherence damping
+                positionAttribute.array[i3] = origX + (deformX + flowX) * (1 - coherence * 0.7);
+                positionAttribute.array[i3 + 1] = origY + (deformY + flowY) * (1 - coherence * 0.7);
+                positionAttribute.array[i3 + 2] = origZ + (deformZ + flowZ) * (1 - coherence * 0.7);
+            }
+            
+            positionAttribute.needsUpdate = true;
+            geometry.computeVertexNormals(); // Recalculate normals for proper lighting
+        }
+        
+        function createLiquidGlassBrandUniverse() {
+            debugLog('Crystallizing brand dimensions...');
+            
+            // Create quantum coherence field
+            const coherenceGeometry = new THREE.SphereGeometry(12, 64, 64);
+            const coherenceMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x64ffda,
+                transparent: true,
+                opacity: 0.03,
+                transmission: 0.9,
+                thickness: 0.1,
+                roughness: 0,
+                metalness: 0,
+                ior: 1.5,
+                side: THREE.BackSide
+            });
+            const coherenceField = new THREE.Mesh(coherenceGeometry, coherenceMaterial);
+            scene.add(coherenceField);
+            
+            // Create enhanced brand name
+            createLiquidTextSprite("ECOFLOW TECHNOLOGIES", { x: 0, y: 8, z: 0 }, 0.6, 0x64ffda);
+            createLiquidTextSprite("QUANTUM COHERENCE: 94%", { x: 0, y: -8, z: 0 }, 0.35, 0x1de9b6);
+            
+            // Create liquid glass dimensions
+            const dimensionNames = Object.keys(brandData.dimensions);
+            dimensionNames.forEach((name, index) => {
+                const data = brandData.dimensions[name];
+                const angle = (index / dimensionNames.length) * Math.PI * 2;
+                const radius = 5;
+                
+                const position = {
+                    x: Math.cos(angle) * radius,
+                    y: (data.depth - 0.5) * 3,
+                    z: Math.sin(angle) * radius
+                };
+                
+                createLiquidGlassDimension(name, data, position);
+            });
+            
+            // Create quantum gravity rules
+            brandData.gravityRules.forEach((rule, index) => {
+                const angle = (index / brandData.gravityRules.length) * Math.PI * 2 + Math.PI / 4;
+                const radius = 8;
+                
+                const position = {
+                    x: Math.cos(angle) * radius,
+                    y: Math.sin(index * 1.5) * 2,
+                    z: Math.sin(angle) * radius
+                };
+                
+                createQuantumGravityRule(rule, position);
+            });
+            
+            // Create flowing connections between dimensions
+            if (connectionMode) {
+                createFlowingConnections();
+            }
+        }
+        
+        function createLiquidGlassDimension(name, data, position) {
+            const group = new THREE.Group();
+            
+            // Create dynamic morphing geometry
+            const baseRadius = data.depth * 0.6 + 0.4;
+            const geometry = createMorphingGeometry(baseRadius, data);
+            
+            let material;
+            if (glassMode) {
+                // Advanced liquid glass material
+                material = new THREE.MeshPhysicalMaterial({
+                    color: data.color,
+                    transparent: true,
+                    opacity: 0.15,
+                    transmission: 0.95,
+                    thickness: data.viscosity,
+                    roughness: 0.02,
+                    metalness: 0,
+                    ior: data.refraction,
+                    envMap: envMap,
+                    envMapIntensity: 1.5,
+                    clearcoat: 1.0,
+                    clearcoatRoughness: 0.1
+                });
+            } else {
+                // Fallback material for compatibility
+                material = new THREE.MeshStandardMaterial({
+                    color: data.color,
+                    transparent: true,
+                    opacity: 0.7 + data.coherence * 0.3,
+                    roughness: 0.1,
+                    metalness: 0.1,
+                    envMap: envMap
+                });
+            }
+            
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.userData = { 
+                name, 
+                data, 
+                type: 'dimension',
+                baseRadius: baseRadius,
+                morphingVertices: geometry.attributes.position.array.slice(), // Store original positions
+                morphingSpeed: data.coherence * 2,
+                morphingAmplitude: (1 - data.coherence) * 0.3
+            };
+            sphere.castShadow = true;
+            sphere.receiveShadow = true;
+            group.add(sphere);
+            
+            // Enhanced inner glow
+            const glowGeometry = new THREE.SphereGeometry((data.depth * 0.6 + 0.4) * 0.8, 32, 32);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: data.color,
+                transparent: true,
+                opacity: data.coherence * 0.3,
+                side: THREE.BackSide
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            group.add(glow);
+            
+            // Enhanced label
+            createLiquidTextSprite(
+                name.replace('_', ' ').toUpperCase(),
+                { x: 0, y: data.depth * 0.6 + 1.2, z: 0 },
+                0.22,
+                0x64ffda,
+                group
+            );
+            
+            // Coherence percentage
+            createLiquidTextSprite(
+                `${(data.coherence * 100).toFixed(0)}% coherent`,
+                { x: 0, y: -data.depth * 0.6 - 0.8, z: 0 },
+                0.14,
+                0x1de9b6,
+                group
+            );
+            
+            group.position.set(position.x, position.y, position.z);
+            group.userData = { originalPosition: position, dimension: true, data: data };
+            scene.add(group);
+            dimensions.push(group);
+        }
+        
+        function createQuantumGravityRule(rule, position) {
+            const group = new THREE.Group();
+            
+            // Quantum gravity center
+            const geometry = new THREE.OctahedronGeometry(0.3, 2);
+            const material = new THREE.MeshPhysicalMaterial({
+                color: rule.color,
+                emissive: rule.color,
+                emissiveIntensity: rule.force * 0.5,
+                transparent: true,
+                opacity: 0.8,
+                transmission: 0.3,
+                roughness: 0,
+                metalness: 0.1,
+                ior: 1.8
+            });
+            const crystal = new THREE.Mesh(geometry, material);
+            crystal.castShadow = true;
+            group.add(crystal);
+            
+            // Quantum field visualization
+            const fieldGeometry = new THREE.SphereGeometry(rule.force * 3, 32, 32);
+            const fieldMaterial = new THREE.MeshBasicMaterial({
+                color: rule.color,
+                transparent: true,
+                opacity: 0.08,
+                side: THREE.DoubleSide
+            });
+            const field = new THREE.Mesh(fieldGeometry, fieldMaterial);
+            group.add(field);
+            
+            // Enhanced label
+            createLiquidTextSprite(
+                rule.name.toUpperCase(),
+                { x: 0, y: rule.force * 3 + 0.5, z: 0 },
+                0.18,
+                rule.color,
+                group
+            );
+            
+            group.position.set(position.x, position.y, position.z);
+            group.userData = { gravity: true, rule };
+            group.visible = showGravityForces;
+            scene.add(group);
+            gravityRules.push(group);
+        }
+        
+        function createLiquidTextSprite(text, position, size, color, parent = scene) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 1024;
+            canvas.height = 256;
+            
+            // Enhanced text rendering
+            context.font = `bold ${size * 120}px 'Segoe UI', sans-serif`;
+            context.fillStyle = `#${color.toString(16).padStart(6, '0')}`;
+            context.strokeStyle = `#${color.toString(16).padStart(6, '0')}`;
+            context.lineWidth = 2;
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            
+            // Add glow effect
+            context.shadowColor = `#${color.toString(16).padStart(6, '0')}`;
+            context.shadowBlur = 20;
+            context.shadowOffsetX = 0;
+            context.shadowOffsetY = 0;
+            
+            context.fillText(text, canvas.width / 2, canvas.height / 2);
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.generateMipmaps = false;
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            
+            const material = new THREE.SpriteMaterial({ 
+                map: texture, 
+                transparent: true,
+                alphaTest: 0.1
+            });
+            const sprite = new THREE.Sprite(material);
+            
+            sprite.position.set(position.x, position.y, position.z);
+            sprite.scale.set(size * 6, size * 1.5, 1);
+            
+            parent.add(sprite);
+            return sprite;
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (!renderer || !scene || !camera) return;
+            
+            if (animationEnabled) {
+                const time = Date.now() * 0.0005;
+                
+                // Enhanced dimension animations with morphing
+                dimensions.forEach((group, index) => {
+                    if (group.userData.dimension) {
+                        const originalPos = group.userData.originalPosition;
+                        const data = group.userData.data;
+                        
+                        // Liquid-like floating motion
+                        group.position.y = originalPos.y + Math.sin(time + index * 0.5) * 0.15;
+                        group.position.x = originalPos.x + Math.sin(time * 0.7 + index) * 0.05;
+                        group.position.z = originalPos.z + Math.cos(time * 0.8 + index) * 0.05;
+                        
+                        // Viscous rotation
+                        group.rotation.y += 0.003 * data.viscosity;
+                        group.rotation.x += 0.002 * data.coherence;
+                        
+                        // Scale pulsing based on coherence
+                        const scale = 1.0 + Math.sin(time * 2 + index) * data.coherence * 0.05;
+                        group.scale.setScalar(scale);
+                        
+                        // Apply dynamic morphing to the main sphere (if enabled)
+                        if (morphingMode) {
+                            const mainSphere = group.children[0]; // First child is the main sphere
+                            if (mainSphere && mainSphere.userData.type === 'dimension') {
+                                updateMorphingGeometry(mainSphere, time);
+                            }
+                        }
+                    }
+                });
+                
+                // Enhanced gravity rule animations
+                gravityRules.forEach((group, index) => {
+                    if (group.userData.gravity) {
+                        const rule = group.userData.rule;
+                        
+                        // Quantum resonance scaling
+                        const scale = 1.0 + Math.sin(time * 3 + index) * rule.force * 0.1;
+                        group.scale.setScalar(scale);
+                        
+                        // Orbital motion
+                        const orbitSpeed = rule.resonance * 0.5;
+                        group.rotation.y += orbitSpeed * 0.01;
+                        
+                        // Quantum fluctuation
+                        const child = group.children[0];
+                        if (child) {
+                            child.rotation.x += 0.02;
+                            child.rotation.z += 0.015;
+                        }
+                    }
+                });
+                
+                // Advanced dynamic lighting animations
+                if (window.sceneLights) {
+                    const lights = window.sceneLights;
+                    
+                    // Pulsing accent lights
+                    lights.accent1.intensity = 1.2 + Math.sin(time * 2) * 0.3;
+                    lights.accent2.intensity = 1.0 + Math.sin(time * 2.5 + Math.PI) * 0.2;
+                    lights.accent3.intensity = 0.8 + Math.sin(time * 1.8 + Math.PI/2) * 0.2;
+                    
+                    // Orbital rim lighting
+                    const rimOrbit = time * 0.3;
+                    lights.rim2.position.x = Math.cos(rimOrbit) * 25;
+                    lights.rim2.position.z = Math.sin(rimOrbit) * 15;
+                    lights.rim3.position.x = Math.cos(rimOrbit + Math.PI) * 25;
+                    lights.rim3.position.z = Math.sin(rimOrbit + Math.PI) * 15;
+                    
+                    // Subsurface breathing effect
+                    lights.sub1.intensity = 0.4 + Math.sin(time * 4) * 0.2;
+                    lights.sub2.intensity = 0.4 + Math.cos(time * 4) * 0.2;
+                    
+                    // Color temperature shifting
+                    const hue1 = (time * 0.1) % 1;
+                    const hue2 = (time * 0.15 + 0.33) % 1;
+                    lights.accent1.color.setHSL(hue1 * 0.2 + 0.5, 0.8, 0.6);  // Cyan-Blue range
+                    lights.accent2.color.setHSL(hue2 * 0.2 + 0.45, 0.9, 0.5); // Teal-Green range
+                }
+                
+                // Update flowing connections
+                if (connectionMode && connections.length > 0) {
+                    updateFlowingConnections(time);
+                }
+            }
+            
+            if (controls) controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        function toggleGravityForces() {
+            showGravityForces = !showGravityForces;
+            gravityRules.forEach(group => {
+                group.visible = showGravityForces;
+            });
+            
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleAnimation() {
+            animationEnabled = !animationEnabled;
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleMorphing() {
+            morphingMode = !morphingMode;
+            debugLog(`Dynamic morphing: ${morphingMode ? 'Enabled' : 'Disabled'}`);
+            
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleConnections() {
+            connectionMode = !connectionMode;
+            debugLog(`Flowing connections: ${connectionMode ? 'Enabled' : 'Disabled'}`);
+            
+            // Toggle visibility of all connections
+            connections.forEach(connection => {
+                connection.visible = connectionMode;
+            });
+            
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleGlassMode() {
+            glassMode = !glassMode;
+            debugLog(`Glass mode: ${glassMode ? 'Enabled' : 'Disabled'}`);
+            
+            // Recreate dimensions with new material mode
+            dimensions.forEach(group => scene.remove(group));
+            dimensions = [];
+            
+            const dimensionNames = Object.keys(brandData.dimensions);
+            dimensionNames.forEach((name, index) => {
+                const data = brandData.dimensions[name];
+                const angle = (index / dimensionNames.length) * Math.PI * 2;
+                const radius = 5;
+                
+                const position = {
+                    x: Math.cos(angle) * radius,
+                    y: (data.depth - 0.5) * 3,
+                    z: Math.sin(angle) * radius
+                };
+                
+                createLiquidGlassDimension(name, data, position);
+            });
+            
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function setupMouseInteraction() {
+            const canvas = renderer.domElement;
+            
+            // Mouse move for hover effects
+            canvas.addEventListener('mousemove', onMouseMove, false);
+            canvas.addEventListener('click', onMouseClick, false);
+            
+            // Update cursor style
+            canvas.style.cursor = 'default';
+        }
+        
+        function onMouseMove(event) {
+            // Calculate mouse position in normalized device coordinates
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            // Update raycaster
+            raycaster.setFromCamera(mouse, camera);
+            
+            // Check for intersections with dimensions
+            const dimensionSpheres = dimensions.map(group => group.children[0]).filter(child => child);
+            const intersects = raycaster.intersectObjects(dimensionSpheres);
+            
+            // Handle hover state
+            if (intersects.length > 0) {
+                const intersectedObject = intersects[0].object;
+                const parentGroup = intersectedObject.parent;
+                
+                if (hoveredDimension !== parentGroup) {
+                    // Clear previous hover
+                    if (hoveredDimension) {
+                        clearHoverEffect(hoveredDimension);
+                    }
+                    
+                    // Set new hover
+                    hoveredDimension = parentGroup;
+                    applyHoverEffect(hoveredDimension);
+                    renderer.domElement.style.cursor = 'pointer';
+                    
+                    // Update info panel
+                    updateInfoPanel(intersectedObject.userData);
+                }
+            } else {
+                // Clear hover
+                if (hoveredDimension) {
+                    clearHoverEffect(hoveredDimension);
+                    hoveredDimension = null;
+                    renderer.domElement.style.cursor = 'default';
+                }
+            }
+        }
+        
+        function onMouseClick(event) {
+            if (hoveredDimension) {
+                if (selectedDimension === hoveredDimension) {
+                    // Deselect if already selected
+                    clearSelectionEffect(selectedDimension);
+                    selectedDimension = null;
+                } else {
+                    // Clear previous selection
+                    if (selectedDimension) {
+                        clearSelectionEffect(selectedDimension);
+                    }
+                    
+                    // Select new dimension
+                    selectedDimension = hoveredDimension;
+                    applySelectionEffect(selectedDimension);
+                    
+                    // Show data manipulation controls
+                    showDataControls(selectedDimension.children[0].userData);
+                }
+            }
+        }
+        
+        function applyHoverEffect(dimensionGroup) {
+            const sphere = dimensionGroup.children[0];
+            if (sphere && sphere.material) {
+                sphere.material.emissiveIntensity = 0.3;
+                sphere.scale.setScalar(1.1);
+            }
+        }
+        
+        function clearHoverEffect(dimensionGroup) {
+            const sphere = dimensionGroup.children[0];
+            if (sphere && sphere.material && !selectedDimension) {
+                sphere.material.emissiveIntensity = 0;
+                sphere.scale.setScalar(1.0);
+            }
+        }
+        
+        function applySelectionEffect(dimensionGroup) {
+            const sphere = dimensionGroup.children[0];
+            if (sphere && sphere.material) {
+                sphere.material.emissiveIntensity = 0.5;
+                sphere.scale.setScalar(1.2);
+            }
+        }
+        
+        function clearSelectionEffect(dimensionGroup) {
+            const sphere = dimensionGroup.children[0];
+            if (sphere && sphere.material) {
+                sphere.material.emissiveIntensity = 0;
+                sphere.scale.setScalar(1.0);
+            }
+        }
+        
+        function updateInfoPanel(userData) {
+            // Update the info panel with dimension details
+            const dimensionName = userData.name?.replace('_', ' ').toUpperCase();
+            const data = userData.data;
+            
+            if (dimensionName && data) {
+                debugLog(`Hovering: ${dimensionName} - Depth: ${(data.depth * 100).toFixed(0)}%, Coherence: ${(data.coherence * 100).toFixed(0)}%`);
+            }
+        }
+        
+        function showDataControls(userData) {
+            const dimensionName = userData.name?.replace('_', ' ').toUpperCase();
+            debugLog(`Selected: ${dimensionName} - Click and drag to manipulate data values`);
+            
+            // In a full implementation, this would show sliders or controls for real-time data manipulation
+            // For now, we'll just provide visual feedback and demonstrate the interactive capability
+        }
+        
+        function resetCamera() {
+            if (camera && controls) {
+                camera.position.set(0, 6, 12);
+                controls.reset();
+            }
+        }
+        
+        // Handle window resize
+        function onWindowResize() {
+            if (camera && renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        }
+        
+        window.addEventListener('resize', onWindowResize);
+        
+        // Start the liquid glass loading process
+        window.addEventListener('load', () => {
+            debugLog('Page loaded, initializing quantum glass universe...');
+            loadThreeJS();
+        });
+    </script>
+</body>
+</html>
