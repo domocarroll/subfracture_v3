@@ -315,7 +315,7 @@
         </div>
         
         <div class="controls">
-            <button class="control-button active" onclick="toggleGravityForces()">Quantum Forces</button>
+            <button class="control-button active" onclick="toggleGravityForces()">Gravity Forces</button>
             <button class="control-button" onclick="toggleAnimation()">Liquid Flow</button>
             <button class="control-button active" onclick="toggleMorphing()">Morphing</button>
             <button class="control-button active" onclick="toggleConnections()">Connections</button>
@@ -837,7 +837,7 @@
                 
                 // Scene setup
                 scene = new THREE.Scene();
-                scene.background = new THREE.Color(0x000428);
+                scene.background = new THREE.Color(0x001144);
                 
                 // Camera setup
                 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -952,7 +952,7 @@
         
         function setupAdvancedLighting() {
             // Enhanced ambient lighting with color temperature
-            const ambientLight = new THREE.HemisphereLight(0x64ffda, 0x000428, 0.6);
+            const ambientLight = new THREE.HemisphereLight(0x64ffda, 0x001144, 0.9);
             ambientLight.position.set(0, 50, 0);
             scene.add(ambientLight);
             
@@ -975,6 +975,15 @@
             const accentLight2 = new THREE.PointLight(0x1de9b6, 1.0, 35);
             accentLight2.position.set(18, -10, 12);
             scene.add(accentLight2);
+            
+            // Label backlighting for better text visibility
+            const labelBacklight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+            labelBacklight1.position.set(0, 20, 15);
+            scene.add(labelBacklight1);
+            
+            const labelBacklight2 = new THREE.DirectionalLight(0x64ffda, 0.5);
+            labelBacklight2.position.set(0, -15, 10);
+            scene.add(labelBacklight2);
             
             // Store lights for real-time updates
             window.sceneLights = {
@@ -1005,7 +1014,7 @@
             
             // Create enhanced brand name
             createLiquidTextSprite("ECOFLOW TECHNOLOGIES", { x: 0, y: 8, z: 0 }, 0.6, 0x64ffda);
-            createLiquidTextSprite("QUANTUM COHERENCE: 94%", { x: 0, y: -8, z: 0 }, 0.35, 0x1de9b6);
+            createLiquidTextSprite("BRAND COHERENCE: 94%", { x: 0, y: -8, z: 0 }, 0.35, 0x1de9b6);
             
             // Create liquid glass dimensions using current brand data
             const currentData = brandData.dimensions || defaultBrandData.dimensions;
@@ -1041,7 +1050,7 @@
                 color: data.color,
                 transparent: true,
                 opacity: 0.15,
-                transmission: 0.95,
+                transmission: 0.85,
                 thickness: data.viscosity,
                 roughness: 0.02,
                 metalness: 0,
@@ -1079,51 +1088,104 @@
         }
         
         function createFlowingConnections() {
-            // Basic connections for demo
+            console.log('🔗 Creating flowing connections...');
+            console.log('Available dimensions:', dimensions.length);
+            
+            // Enhanced connections - create more comprehensive network
             const connectionRelationships = [
                 { from: 'market_position', to: 'value_proposition', strength: 0.9, type: 'strategic' },
-                { from: 'brand_narrative', to: 'emotional_landscape', strength: 0.85, type: 'experiential' }
+                { from: 'brand_narrative', to: 'emotional_landscape', strength: 0.85, type: 'experiential' },
+                { from: 'visual_identity', to: 'digital_presence', strength: 0.8, type: 'implementation' },
+                { from: 'innovation_capacity', to: 'market_position', strength: 0.75, type: 'competitive' },
+                { from: 'value_proposition', to: 'brand_narrative', strength: 0.7, type: 'messaging' },
+                { from: 'emotional_landscape', to: 'visual_identity', strength: 0.65, type: 'aesthetic' }
             ];
             
+            let connectionsCreated = 0;
             connectionRelationships.forEach((relationship, index) => {
-                createFlowingConnection(relationship, index);
+                if (createFlowingConnection(relationship, index)) {
+                    connectionsCreated++;
+                }
             });
+            
+            console.log(`✅ Created ${connectionsCreated} flowing connections`);
         }
         
         function createFlowingConnection(relationship, index) {
-            const fromDimension = dimensions.find(d => 
-                d.children[0]?.userData.name === relationship.from
-            );
-            const toDimension = dimensions.find(d => 
-                d.children[0]?.userData.name === relationship.to
-            );
+            // Find dimensions by checking userData.name on the sphere (first child)
+            const fromDimension = dimensions.find(d => {
+                const sphere = d.children[0];
+                return sphere && sphere.userData && sphere.userData.name === relationship.from;
+            });
+            const toDimension = dimensions.find(d => {
+                const sphere = d.children[0];
+                return sphere && sphere.userData && sphere.userData.name === relationship.to;
+            });
             
-            if (!fromDimension || !toDimension) return;
+            if (!fromDimension || !toDimension) {
+                console.warn(`❌ Could not find dimensions for connection: ${relationship.from} -> ${relationship.to}`);
+                return false;
+            }
+            
+            console.log(`✅ Creating connection: ${relationship.from} -> ${relationship.to}`);
             
             const connectionGroup = new THREE.Group();
             
-            // Create simple tube connection
+            // Create enhanced, more visible tube connection
             const fromPos = fromDimension.position;
             const toPos = toDimension.position;
+            const distance = fromPos.distanceTo(toPos);
+            
+            // Create curved path with height variation
             const midPoint = new THREE.Vector3().addVectors(fromPos, toPos).multiplyScalar(0.5);
+            midPoint.y += distance * 0.2; // Add curve height
             
             const curve = new THREE.CatmullRomCurve3([fromPos.clone(), midPoint, toPos.clone()]);
-            const tubeGeometry = new THREE.TubeGeometry(curve, 32, 0.02, 8, false);
+            
+            // Make connections much more visible
+            const tubeGeometry = new THREE.TubeGeometry(curve, 32, 0.08, 12, false); // Larger radius
             const tubeMaterial = new THREE.MeshPhysicalMaterial({
                 color: 0x64ffda,
                 transparent: true,
-                opacity: 0.4,
-                transmission: 0.8,
+                opacity: 0.8, // More opaque
+                transmission: 0.3, // Less transparent
+                roughness: 0.1,
+                metalness: 0.1,
                 emissive: 0x64ffda,
-                emissiveIntensity: 0.1
+                emissiveIntensity: 0.3 // Brighter glow
             });
             
             const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
             connectionGroup.add(tube);
             
-            connectionGroup.userData = { type: 'connection', relationship };
+            // Add flowing particles for movement visualization
+            const particleCount = 5;
+            for (let i = 0; i < particleCount; i++) {
+                const particleGeometry = new THREE.SphereGeometry(0.03, 8, 8);
+                const particleMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x64ffda,
+                    emissive: 0x64ffda,
+                    emissiveIntensity: 0.5
+                });
+                
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                const t = i / particleCount;
+                const position = curve.getPoint(t);
+                particle.position.copy(position);
+                
+                particle.userData = {
+                    curvePosition: t,
+                    speed: 0.005 + Math.random() * 0.005
+                };
+                
+                connectionGroup.add(particle);
+            }
+            
+            connectionGroup.userData = { type: 'connection', relationship, curve, particles: particleCount };
             scene.add(connectionGroup);
             connections.push(connectionGroup);
+            
+            return true;
         }
         
         function createLiquidTextSprite(text, position, size, color, parent = scene) {
@@ -1132,12 +1194,39 @@
             canvas.width = 1024;
             canvas.height = 256;
             
+            // Add dark background ring for better contrast
+            context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            context.beginPath();
+            context.ellipse(canvas.width / 2, canvas.height / 2, text.length * size * 25, size * 35, 0, 0, 2 * Math.PI);
+            context.fill();
+            
+            // Enhanced text with multiple glow layers
             context.font = `bold ${size * 120}px 'Segoe UI', sans-serif`;
-            context.fillStyle = `#${color.toString(16).padStart(6, '0')}`;
             context.textAlign = 'center';
             context.textBaseline = 'middle';
-            context.shadowColor = `#${color.toString(16).padStart(6, '0')}`;
-            context.shadowBlur = 20;
+            
+            // Multiple glow layers for better visibility
+            const colorHex = `#${color.toString(16).padStart(6, '0')}`;
+            
+            // Outer glow
+            context.shadowColor = colorHex;
+            context.shadowBlur = 40;
+            context.shadowOffsetX = 0;
+            context.shadowOffsetY = 0;
+            
+            // Text outline for definition
+            context.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+            context.lineWidth = 4;
+            context.strokeText(text, canvas.width / 2, canvas.height / 2);
+            
+            // Main text with enhanced glow
+            context.fillStyle = colorHex;
+            context.shadowBlur = 25;
+            context.fillText(text, canvas.width / 2, canvas.height / 2);
+            
+            // Inner highlight
+            context.shadowBlur = 10;
+            context.fillStyle = 'rgba(255, 255, 255, 0.9)';
             context.fillText(text, canvas.width / 2, canvas.height / 2);
             
             const texture = new THREE.CanvasTexture(canvas);
@@ -1183,6 +1272,41 @@
                         group.scale.setScalar(scale);
                     }
                 });
+                
+                // Animate flowing connections
+                if (connectionMode && connections.length > 0) {
+                    connections.forEach((connectionGroup, groupIndex) => {
+                        const userData = connectionGroup.userData;
+                        if (userData && userData.type === 'connection') {
+                            // Animate flowing particles
+                            connectionGroup.children.forEach((child, childIndex) => {
+                                if (child.userData && child.userData.curvePosition !== undefined) {
+                                    // This is a particle
+                                    const particle = child;
+                                    const curve = userData.curve;
+                                    
+                                    // Update particle position along curve
+                                    particle.userData.curvePosition += particle.userData.speed;
+                                    if (particle.userData.curvePosition > 1) {
+                                        particle.userData.curvePosition = 0; // Loop back
+                                    }
+                                    
+                                    // Get new position on curve
+                                    const newPosition = curve.getPoint(particle.userData.curvePosition);
+                                    particle.position.copy(newPosition);
+                                    
+                                    // Pulse particle intensity
+                                    const pulse = 0.3 + Math.sin(time * 6 + childIndex) * 0.2;
+                                    particle.material.emissiveIntensity = pulse;
+                                } else if (child.material && child.material.emissiveIntensity !== undefined) {
+                                    // This is the tube - pulse the glow
+                                    const tubePulse = 0.2 + Math.sin(time * 2 + groupIndex) * 0.1;
+                                    child.material.emissiveIntensity = tubePulse;
+                                }
+                            });
+                        }
+                    });
+                }
                 
                 // Real-time lighting updates
                 if (window.sceneLights && brandData.cognitiveState) {
@@ -1263,13 +1387,60 @@
             }
         }
         
-        // Control functions (simplified versions)
-        function toggleGravityForces() { console.log('Toggle gravity forces'); }
-        function toggleAnimation() { console.log('Toggle animation'); }
-        function toggleMorphing() { console.log('Toggle morphing'); }
-        function toggleConnections() { console.log('Toggle connections'); }
-        function toggleGlassMode() { console.log('Toggle glass mode'); }
-        function resetCamera() { console.log('Reset camera'); }
+        // Control functions - enhanced implementations
+        function toggleGravityForces() {
+            showGravityForces = !showGravityForces;
+            console.log('Gravity forces:', showGravityForces ? 'ON' : 'OFF');
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleAnimation() {
+            animationEnabled = !animationEnabled;
+            console.log('Animation:', animationEnabled ? 'ON' : 'OFF');
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleMorphing() {
+            morphingMode = !morphingMode;
+            console.log('Morphing:', morphingMode ? 'ON' : 'OFF');
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleConnections() {
+            connectionMode = !connectionMode;
+            console.log('Connections:', connectionMode ? 'ON' : 'OFF');
+            
+            // Toggle visibility of all connections
+            connections.forEach(connection => {
+                connection.visible = connectionMode;
+            });
+            
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleGlassMode() {
+            glassMode = !glassMode;
+            console.log('Glass mode:', glassMode ? 'ON' : 'OFF');
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function resetCamera() {
+            if (camera && controls) {
+                camera.position.set(0, 6, 12);
+                controls.reset();
+                console.log('Camera reset to default position');
+            }
+        }
         
         // Initialize the application when page loads
         document.addEventListener('DOMContentLoaded', function() {
