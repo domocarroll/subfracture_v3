@@ -1386,14 +1386,22 @@
             console.log('🔗 Creating flowing connections...');
             console.log('Available dimensions:', dimensions.length);
             
-            // Enhanced connections - create more comprehensive network
+            // Enhanced connections - comprehensive brand ecosystem network
             const connectionRelationships = [
+                // Core strategic connections
                 { from: 'market_position', to: 'value_proposition', strength: 0.9, type: 'strategic' },
                 { from: 'brand_narrative', to: 'emotional_landscape', strength: 0.85, type: 'experiential' },
                 { from: 'visual_identity', to: 'digital_presence', strength: 0.8, type: 'implementation' },
                 { from: 'innovation_capacity', to: 'market_position', strength: 0.75, type: 'competitive' },
+                
+                // Secondary strategic connections
                 { from: 'value_proposition', to: 'brand_narrative', strength: 0.7, type: 'messaging' },
-                { from: 'emotional_landscape', to: 'visual_identity', strength: 0.65, type: 'aesthetic' }
+                { from: 'emotional_landscape', to: 'visual_identity', strength: 0.65, type: 'aesthetic' },
+                
+                // Missing key connections (including digital_presence <-> innovation_capacity)
+                { from: 'digital_presence', to: 'innovation_capacity', strength: 0.72, type: 'technological' },
+                { from: 'market_position', to: 'digital_presence', strength: 0.68, type: 'presence' },
+                { from: 'innovation_capacity', to: 'value_proposition', strength: 0.73, type: 'value_creation' }
             ];
             
             let connectionsCreated = 0;
