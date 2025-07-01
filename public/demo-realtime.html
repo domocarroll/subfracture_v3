@@ -702,11 +702,11 @@
         }
         
         async function loadThreeWithFallbacks() {
-            // Fixed CDN URLs - using full library versions
+            // Working CDN URLs - using correct paths
             const threeSources = [
-                'https://cdnjs.cloudflare.com/ajax/libs/three.js/r178/three.min.js',
-                'https://unpkg.com/three@0.178.0/build/three.min.js',
-                'https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.min.js'
+                'https://unpkg.com/three@0.160.0/build/three.min.js',
+                'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js'
             ];
             
             console.log('🔗 Available Three.js sources:', threeSources.length);
@@ -758,8 +758,8 @@
         
         async function loadOrbitControlsWithFallbacks() {
             const controlsSources = [
-                'https://unpkg.com/three@0.178.0/examples/js/controls/OrbitControls.js',
-                'https://cdn.jsdelivr.net/npm/three@0.178.0/examples/js/controls/OrbitControls.js',
+                'https://unpkg.com/three@0.160.0/examples/js/controls/OrbitControls.js',
+                'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js',
                 'https://unpkg.com/three@0.140.0/examples/js/controls/OrbitControls.js'
             ];
             
