@@ -968,11 +968,268 @@
             }
         }
         
+        // Enhanced Platform Detection & Capability System
+        let platformCapabilities = {
+            browser: 'unknown',
+            os: 'unknown',
+            isSafari: false,
+            isMac: false,
+            hasIntegratedGraphics: false,
+            webglLevel: 0,
+            maxTextureSize: 0,
+            supportsAdvancedMaterials: false,
+            recommendedMaterial: 'basic',
+            powerPreference: 'default'
+        };
+        
+        function detectPlatformCapabilities() {
+            console.log('🔍 PLATFORM DETECTION: Analyzing system capabilities...');
+            
+            // Browser Detection
+            const userAgent = navigator.userAgent;
+            platformCapabilities.isSafari = /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
+            platformCapabilities.browser = platformCapabilities.isSafari ? 'safari' : 
+                                         /Chrome/.test(userAgent) ? 'chrome' :
+                                         /Firefox/.test(userAgent) ? 'firefox' : 'unknown';
+            
+            // OS Detection
+            platformCapabilities.isMac = /Mac|iPhone|iPad|iPod/.test(userAgent);
+            platformCapabilities.os = platformCapabilities.isMac ? 'mac' :
+                                     /Win/.test(userAgent) ? 'windows' :
+                                     /Linux/.test(userAgent) ? 'linux' : 'unknown';
+            
+            console.log(`🖥️  Platform: ${platformCapabilities.os} / ${platformCapabilities.browser}`);
+            console.log(`🍎 Safari on Mac: ${platformCapabilities.isSafari && platformCapabilities.isMac}`);
+            
+            // WebGL Capability Detection
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            
+            if (gl) {
+                // WebGL Level Detection
+                platformCapabilities.webglLevel = canvas.getContext('webgl2') ? 2 : 1;
+                
+                // Hardware Detection
+                const renderer = gl.getParameter(gl.RENDERER) || '';
+                const vendor = gl.getParameter(gl.VENDOR) || '';
+                
+                console.log(`🎮 WebGL ${platformCapabilities.webglLevel}.0 Support: YES`);
+                console.log(`🔧 GPU: ${renderer}`);
+                console.log(`🏭 Vendor: ${vendor}`);
+                
+                // Integrated Graphics Detection (common patterns)
+                const integratedPatterns = [
+                    /Intel.*HD/i, /Intel.*UHD/i, /Intel.*Iris/i,
+                    /Apple.*GPU/i, /Apple.*M1/i, /Apple.*M2/i,
+                    /AMD.*Radeon.*Vega/i, /Qualcomm/i
+                ];
+                
+                platformCapabilities.hasIntegratedGraphics = integratedPatterns.some(pattern => 
+                    pattern.test(renderer) || pattern.test(vendor)
+                );
+                
+                // Texture Size Limits
+                platformCapabilities.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+                
+                // Advanced Material Support Detection
+                const extensions = gl.getSupportedExtensions() || [];
+                const hasAdvancedExtensions = extensions.some(ext => 
+                    ext.includes('OES_standard_derivatives') || 
+                    ext.includes('EXT_shader_texture_lod') ||
+                    ext.includes('WEBGL_draw_buffers')
+                );
+                
+                platformCapabilities.supportsAdvancedMaterials = 
+                    platformCapabilities.webglLevel >= 2 && 
+                    hasAdvancedExtensions && 
+                    !platformCapabilities.hasIntegratedGraphics &&
+                    platformCapabilities.maxTextureSize >= 2048;
+                
+                console.log(`🔌 WebGL Extensions: ${extensions.length} available`);
+                console.log(`📐 Max Texture Size: ${platformCapabilities.maxTextureSize}`);
+                console.log(`⚙️  Integrated Graphics: ${platformCapabilities.hasIntegratedGraphics}`);
+                console.log(`💎 Advanced Materials Support: ${platformCapabilities.supportsAdvancedMaterials}`);
+                
+            } else {
+                console.error('❌ WebGL: NOT SUPPORTED');
+                platformCapabilities.webglLevel = 0;
+            }
+            
+            // Material Recommendation System
+            if (platformCapabilities.supportsAdvancedMaterials) {
+                platformCapabilities.recommendedMaterial = 'physical';
+                platformCapabilities.powerPreference = 'high-performance';
+            } else if (platformCapabilities.webglLevel >= 1 && !platformCapabilities.hasIntegratedGraphics) {
+                platformCapabilities.recommendedMaterial = 'standard';
+                platformCapabilities.powerPreference = 'default';
+            } else {
+                platformCapabilities.recommendedMaterial = 'basic';
+                platformCapabilities.powerPreference = 'low-power';
+            }
+            
+            // Safari-Specific Adjustments
+            if (platformCapabilities.isSafari) {
+                // Safari is more conservative with advanced features
+                if (platformCapabilities.recommendedMaterial === 'physical') {
+                    platformCapabilities.recommendedMaterial = 'standard';
+                }
+                platformCapabilities.powerPreference = 'default'; // Safari doesn't like high-performance
+                console.log('🍎 Safari detected: Using conservative material settings');
+            }
+            
+            // Mac-Specific Adjustments
+            if (platformCapabilities.isMac && platformCapabilities.hasIntegratedGraphics) {
+                platformCapabilities.recommendedMaterial = 'basic';
+                platformCapabilities.powerPreference = 'low-power';
+                console.log('🍎 Mac with integrated graphics: Using basic material settings');
+            }
+            
+            console.log(`🎨 Recommended Material: ${platformCapabilities.recommendedMaterial}`);
+            console.log(`⚡ Power Preference: ${platformCapabilities.powerPreference}`);
+            console.log('🎯 PLATFORM DETECTION COMPLETE');
+            
+            return platformCapabilities;
+        }
+        
+        // Progressive Material Enhancement System
+        function createAdaptiveMaterial(materialConfig) {
+            const config = {
+                color: materialConfig.color || 0xffffff,
+                transparent: materialConfig.transparent !== false,
+                opacity: materialConfig.opacity || 1.0,
+                transmission: materialConfig.transmission || 0,
+                thickness: materialConfig.thickness || 0.5,
+                roughness: materialConfig.roughness || 0.1,
+                metalness: materialConfig.metalness || 0,
+                ior: materialConfig.ior || 1.5,
+                emissive: materialConfig.emissive || 0x000000,
+                emissiveIntensity: materialConfig.emissiveIntensity || 0,
+                side: materialConfig.side || THREE.FrontSide,
+                ...materialConfig
+            };
+            
+            console.log(`🎨 Creating ${platformCapabilities.recommendedMaterial} material for ${config.name || 'unnamed'}`);
+            
+            let material;
+            
+            switch (platformCapabilities.recommendedMaterial) {
+                case 'physical':
+                    // Full liquid glass experience with advanced materials
+                    material = new THREE.MeshPhysicalMaterial({
+                        color: config.color,
+                        transparent: config.transparent,
+                        opacity: config.opacity,
+                        transmission: config.transmission,
+                        thickness: config.thickness,
+                        roughness: config.roughness,
+                        metalness: config.metalness,
+                        ior: config.ior,
+                        emissive: config.emissive,
+                        emissiveIntensity: config.emissiveIntensity,
+                        side: config.side,
+                        clearcoat: config.clearcoat || 0,
+                        clearcoatRoughness: config.clearcoatRoughness || 0,
+                        sheen: config.sheen || 0
+                    });
+                    console.log('✨ Created MeshPhysicalMaterial with full liquid glass effects');
+                    break;
+                    
+                case 'standard':
+                    // Good balance - Standard material with some advanced features
+                    material = new THREE.MeshStandardMaterial({
+                        color: config.color,
+                        transparent: config.transparent,
+                        opacity: config.opacity,
+                        roughness: config.roughness,
+                        metalness: config.metalness,
+                        emissive: config.emissive,
+                        emissiveIntensity: config.emissiveIntensity,
+                        side: config.side
+                    });
+                    console.log('🔧 Created MeshStandardMaterial with good performance balance');
+                    break;
+                    
+                case 'basic':
+                default:
+                    // Maximum compatibility - Basic material for integrated graphics
+                    material = new THREE.MeshBasicMaterial({
+                        color: config.color,
+                        transparent: config.transparent,
+                        opacity: config.opacity,
+                        side: config.side
+                    });
+                    
+                    // Add some visual interest with emissive if supported
+                    if (config.emissive && config.emissive !== 0x000000) {
+                        material.color.setHex(config.emissive);
+                    }
+                    console.log('⚡ Created MeshBasicMaterial for maximum compatibility');
+                    break;
+            }
+            
+            // Platform-specific optimizations
+            if (platformCapabilities.isSafari || platformCapabilities.hasIntegratedGraphics) {
+                // Reduce opacity for better performance on Safari/integrated graphics
+                if (material.transparent && material.opacity > 0.5) {
+                    material.opacity = Math.max(0.3, material.opacity * 0.7);
+                    console.log(`🍎 Safari/integrated graphics optimization: Reduced opacity to ${material.opacity}`);
+                }
+            }
+            
+            return material;
+        }
+        
+        // Adaptive Geometry System for Performance Optimization
+        function createAdaptiveGeometry(geometryType, params) {
+            let segments, detail, complexity;
+            
+            // Adjust complexity based on platform capabilities
+            if (platformCapabilities.hasIntegratedGraphics || platformCapabilities.isSafari) {
+                complexity = 'low';
+                segments = 16; // Low polygon count for integrated graphics
+                detail = 1;
+            } else if (platformCapabilities.recommendedMaterial === 'standard') {
+                complexity = 'medium';
+                segments = 32; // Medium polygon count for standard systems
+                detail = 2;
+            } else {
+                complexity = 'high';
+                segments = 64; // High polygon count for capable systems
+                detail = 2;
+            }
+            
+            console.log(`🔺 Creating ${complexity} complexity geometry: ${geometryType} with ${segments} segments`);
+            
+            switch (geometryType) {
+                case 'sphere':
+                    return new THREE.SphereGeometry(
+                        params.radius || 1,
+                        Math.min(segments, params.widthSegments || segments),
+                        Math.min(segments, params.heightSegments || segments)
+                    );
+                    
+                case 'octahedron':
+                    return new THREE.OctahedronGeometry(
+                        params.radius || 1,
+                        Math.min(detail, params.detail || detail)
+                    );
+                    
+                default:
+                    console.warn(`Unknown geometry type: ${geometryType}`);
+                    return new THREE.SphereGeometry(params.radius || 1, 32, 32);
+            }
+        }
+        
         function init() {
             console.log('🎨 INITIALIZING liquid glass universe...');
             console.log('🔍 Pre-init check - THREE available:', typeof THREE !== 'undefined');
             
             try {
+                // Step 0: Platform Detection & Capability Analysis
+                console.log('🧪 Step 0: Platform detection and capability analysis...');
+                detectPlatformCapabilities();
+                console.log('✅ Platform capabilities detected and analyzed');
+                
                 // Enhanced basic functionality testing
                 console.log('🧪 Step 1: Testing basic Three.js functionality...');
                 if (!testBasicThreeJS()) {
@@ -998,13 +1255,21 @@
                 camera.position.set(0, 6, 12);
                 console.log('✅ Camera positioned at (0, 6, 12)');
                 
-                // Renderer setup
+                // Renderer setup with platform-specific optimizations
                 console.log('🧪 Step 5: Creating WebGL renderer...');
-                renderer = new THREE.WebGLRenderer({ 
-                    antialias: true,
+                console.log(`⚡ Using power preference: ${platformCapabilities.powerPreference}`);
+                console.log(`🎨 Platform-optimized renderer for: ${platformCapabilities.os}/${platformCapabilities.browser}`);
+                
+                const rendererConfig = {
+                    antialias: platformCapabilities.hasIntegratedGraphics ? false : true,
                     alpha: true,
-                    powerPreference: "high-performance"
-                });
+                    powerPreference: platformCapabilities.powerPreference,
+                    precision: platformCapabilities.hasIntegratedGraphics ? 'mediump' : 'highp',
+                    stencil: !platformCapabilities.hasIntegratedGraphics
+                };
+                
+                console.log('🔧 Renderer config:', rendererConfig);
+                renderer = new THREE.WebGLRenderer(rendererConfig);
                 console.log('✅ WebGL renderer created successfully');
                 console.log('🔧 Renderer info - antialias:', renderer.capabilities.antialias);
                 console.log('🔧 Renderer info - maxTextures:', renderer.capabilities.maxTextures);
@@ -1189,9 +1454,10 @@
         function createLiquidGlassBrandUniverse() {
             console.log('🔮 Crystallizing brand dimensions...');
             
-            // Create quantum coherence field
-            const coherenceGeometry = new THREE.SphereGeometry(12, 64, 64);
-            const coherenceMaterial = new THREE.MeshPhysicalMaterial({
+            // Create quantum coherence field with adaptive material and geometry
+            const coherenceGeometry = createAdaptiveGeometry('sphere', { radius: 12 });
+            const coherenceMaterial = createAdaptiveMaterial({
+                name: 'coherence_field',
                 color: 0x64ffda,
                 transparent: true,
                 opacity: 0.03,
@@ -1200,7 +1466,9 @@
                 roughness: 0,
                 metalness: 0,
                 ior: 1.5,
-                side: THREE.BackSide
+                side: THREE.BackSide,
+                emissive: 0x64ffda,
+                emissiveIntensity: 0.05
             });
             const coherenceField = new THREE.Mesh(coherenceGeometry, coherenceMaterial);
             scene.add(coherenceField);
@@ -1261,12 +1529,14 @@
                 signalStrength: data.signalStrength || 0.8
             };
             
-            // Enhanced liquid glass sphere
+            // Enhanced liquid glass sphere with adaptive geometry
             const sphereRadius = safeData.depth * 0.6 + 0.4;
-            const geometry = new THREE.SphereGeometry(sphereRadius, 64, 64);
+            const geometry = createAdaptiveGeometry('sphere', { radius: sphereRadius });
             console.log(`🔸 ${name} sphere radius: ${sphereRadius}`);
             
-            const material = new THREE.MeshPhysicalMaterial({
+            // Create platform-adaptive material for liquid glass sphere
+            const material = createAdaptiveMaterial({
+                name: `${name}_sphere`,
                 color: safeData.color,
                 transparent: true,
                 opacity: 0.15,
@@ -1278,7 +1548,9 @@
                 envMap: envMap,
                 envMapIntensity: 1.5,
                 clearcoat: 1.0,
-                clearcoatRoughness: 0.1
+                clearcoatRoughness: 0.1,
+                emissive: safeData.color,
+                emissiveIntensity: 0.1
             });
             
             const sphere = new THREE.Mesh(geometry, material);
@@ -1336,9 +1608,10 @@
         function createGravityForce(rule, position) {
             const group = new THREE.Group();
             
-            // Gravity center crystal
-            const geometry = new THREE.OctahedronGeometry(0.3, 2);
-            const material = new THREE.MeshPhysicalMaterial({
+            // Gravity center crystal with adaptive material and geometry
+            const geometry = createAdaptiveGeometry('octahedron', { radius: 0.3, detail: 2 });
+            const material = createAdaptiveMaterial({
+                name: `${rule.name}_crystal`,
                 color: rule.color,
                 emissive: rule.color,
                 emissiveIntensity: rule.force * 0.5,
@@ -1353,13 +1626,16 @@
             crystal.castShadow = true;
             group.add(crystal);
             
-            // Gravity field visualization
-            const fieldGeometry = new THREE.SphereGeometry(rule.force * 3, 32, 32);
-            const fieldMaterial = new THREE.MeshBasicMaterial({
+            // Gravity field visualization with adaptive material and geometry
+            const fieldGeometry = createAdaptiveGeometry('sphere', { radius: rule.force * 3 });
+            const fieldMaterial = createAdaptiveMaterial({
+                name: `${rule.name}_field`,
                 color: rule.color,
                 transparent: true,
                 opacity: 0.08,
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
+                emissive: rule.color,
+                emissiveIntensity: 0.1
             });
             const field = new THREE.Mesh(fieldGeometry, fieldMaterial);
             group.add(field);
