@@ -1386,22 +1386,34 @@
             console.log('🔗 Creating flowing connections...');
             console.log('Available dimensions:', dimensions.length);
             
-            // Enhanced connections - comprehensive brand ecosystem network
+            // Complete brand ecosystem network - all interdependencies
             const connectionRelationships = [
-                // Core strategic connections
-                { from: 'market_position', to: 'value_proposition', strength: 0.9, type: 'strategic' },
-                { from: 'brand_narrative', to: 'emotional_landscape', strength: 0.85, type: 'experiential' },
-                { from: 'visual_identity', to: 'digital_presence', strength: 0.8, type: 'implementation' },
-                { from: 'innovation_capacity', to: 'market_position', strength: 0.75, type: 'competitive' },
+                // Primary strategic connections (strongest)
+                { from: 'market_position', to: 'value_proposition', strength: 0.92, type: 'strategic' },
+                { from: 'brand_narrative', to: 'emotional_landscape', strength: 0.89, type: 'experiential' },
+                { from: 'visual_identity', to: 'digital_presence', strength: 0.85, type: 'implementation' },
+                { from: 'innovation_capacity', to: 'market_position', strength: 0.83, type: 'competitive' },
                 
                 // Secondary strategic connections
-                { from: 'value_proposition', to: 'brand_narrative', strength: 0.7, type: 'messaging' },
-                { from: 'emotional_landscape', to: 'visual_identity', strength: 0.65, type: 'aesthetic' },
+                { from: 'value_proposition', to: 'brand_narrative', strength: 0.78, type: 'messaging' },
+                { from: 'emotional_landscape', to: 'visual_identity', strength: 0.75, type: 'aesthetic' },
+                { from: 'digital_presence', to: 'innovation_capacity', strength: 0.76, type: 'technological' },
+                { from: 'market_position', to: 'digital_presence', strength: 0.72, type: 'presence' },
+                { from: 'innovation_capacity', to: 'value_proposition', strength: 0.79, type: 'value_creation' },
                 
-                // Missing key connections (including digital_presence <-> innovation_capacity)
-                { from: 'digital_presence', to: 'innovation_capacity', strength: 0.72, type: 'technological' },
-                { from: 'market_position', to: 'digital_presence', strength: 0.68, type: 'presence' },
-                { from: 'innovation_capacity', to: 'value_proposition', strength: 0.73, type: 'value_creation' }
+                // Tertiary connections (complete ecosystem)
+                { from: 'market_position', to: 'brand_narrative', strength: 0.68, type: 'positioning' },
+                { from: 'market_position', to: 'emotional_landscape', strength: 0.65, type: 'market_emotion' },
+                { from: 'market_position', to: 'visual_identity', strength: 0.67, type: 'brand_recognition' },
+                { from: 'value_proposition', to: 'emotional_landscape', strength: 0.74, type: 'emotional_value' },
+                { from: 'value_proposition', to: 'visual_identity', strength: 0.69, type: 'visual_value' },
+                { from: 'value_proposition', to: 'digital_presence', strength: 0.71, type: 'digital_value' },
+                { from: 'brand_narrative', to: 'visual_identity', strength: 0.73, type: 'visual_story' },
+                { from: 'brand_narrative', to: 'digital_presence', strength: 0.70, type: 'digital_story' },
+                { from: 'brand_narrative', to: 'innovation_capacity', strength: 0.66, type: 'innovation_story' },
+                { from: 'emotional_landscape', to: 'digital_presence', strength: 0.68, type: 'digital_emotion' },
+                { from: 'emotional_landscape', to: 'innovation_capacity', strength: 0.64, type: 'innovation_emotion' },
+                { from: 'visual_identity', to: 'innovation_capacity', strength: 0.63, type: 'innovation_visual' }
             ];
             
             let connectionsCreated = 0;
