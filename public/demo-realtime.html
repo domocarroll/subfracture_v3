@@ -726,18 +726,7 @@
             }, 3000);
         });
         
-        // Enhanced brand data with liquid glass properties (real-time updated)
-        const defaultBrandData = {
-            dimensions: {
-                market_position: { depth: 0.85, coherence: 0.92, color: 0x2196F3, viscosity: 0.8, refraction: 1.52 },
-                value_proposition: { depth: 0.78, coherence: 0.88, color: 0x4CAF50, viscosity: 0.75, refraction: 1.48 },
-                brand_narrative: { depth: 0.82, coherence: 0.75, color: 0xFF9800, viscosity: 0.9, refraction: 1.54 },
-                emotional_landscape: { depth: 0.90, coherence: 0.85, color: 0xE91E63, viscosity: 0.95, refraction: 1.55 },
-                visual_identity: { depth: 0.75, coherence: 0.95, color: 0x9C27B0, viscosity: 0.7, refraction: 1.49 },
-                digital_presence: { depth: 0.88, coherence: 0.78, color: 0x607D8B, viscosity: 0.8, refraction: 1.51 },
-                innovation_capacity: { depth: 0.92, coherence: 0.88, color: 0xFF5722, viscosity: 0.85, refraction: 1.53 }
-            }
-        };
+        // Removed duplicate defaultBrandData - using the comprehensive one defined earlier
         
         // Full Three.js Implementation with Real-Time Integration
         async function loadThreeJS() {
@@ -1700,6 +1689,68 @@
             }
             if (typeof loadThreeJS === 'function') {
                 loadThreeJS().catch(showFallback);
+            }
+        }
+        
+        // Control functions - enhanced implementations
+        function toggleGravityForces() {
+            showGravityForces = !showGravityForces;
+            console.log('Gravity forces:', showGravityForces ? 'ON' : 'OFF');
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleAnimation() {
+            animationEnabled = !animationEnabled;
+            console.log('Animation:', animationEnabled ? 'ON' : 'OFF');
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleMorphing() {
+            morphingMode = !morphingMode;
+            console.log('Morphing:', morphingMode ? 'ON' : 'OFF');
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleConnections() {
+            connectionMode = !connectionMode;
+            console.log('Connections:', connectionMode ? 'ON' : 'OFF');
+            
+            // Toggle visibility of all connections
+            if (connections && connections.length > 0) {
+                connections.forEach(connection => {
+                    connection.visible = connectionMode;
+                });
+            }
+            
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function toggleGlassMode() {
+            glassMode = !glassMode;
+            console.log('Glass mode:', glassMode ? 'ON' : 'OFF');
+            if (event && event.target) {
+                event.target.classList.toggle('active');
+            }
+        }
+        
+        function simulateWorkshopData() {
+            console.log('Workshop simulation triggered');
+            addRealtimeUpdate('Simulating workshop data processing...', 'workshop');
+        }
+        
+        function resetCamera() {
+            if (camera && controls) {
+                camera.position.set(0, 6, 12);
+                controls.reset();
+                console.log('Camera reset to default position');
             }
         }
     </script>
