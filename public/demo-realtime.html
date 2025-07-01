@@ -681,181 +681,296 @@
         
         // Full Three.js Implementation with Real-Time Integration
         async function loadThreeJS() {
-            console.log('🎮 Loading Three.js liquid glass universe...');
+            console.log('🎮 STARTING Three.js liquid glass universe loading...');
+            console.log('📊 Browser info:', navigator.userAgent);
+            console.log('🖥️ Screen resolution:', window.innerWidth + 'x' + window.innerHeight);
             
             try {
+                console.log('📦 Step 1: Loading Three.js core library...');
                 await loadThreeWithFallbacks();
+                
+                console.log('🎛️ Step 2: Loading OrbitControls...');
                 await loadOrbitControlsWithFallbacks();
+                
+                console.log('🎨 Step 3: Initializing 3D scene...');
                 init();
             } catch (error) {
-                console.error('❌ Three.js loading failed:', error);
+                console.error('❌ CRITICAL: Three.js loading failed at step:', error.message);
+                console.error('📄 Full error:', error);
                 showFallback();
             }
         }
         
         async function loadThreeWithFallbacks() {
+            // Fixed CDN URLs - using full library versions
             const threeSources = [
-                'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.178.0/three.core.js',
-                'https://unpkg.com/three@0.178.0/build/three.module.js', 
-                'https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js'
+                'https://cdnjs.cloudflare.com/ajax/libs/three.js/r178/three.min.js',
+                'https://unpkg.com/three@0.178.0/build/three.min.js',
+                'https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.min.js'
             ];
+            
+            console.log('🔗 Available Three.js sources:', threeSources.length);
             
             for (let i = 0; i < threeSources.length; i++) {
                 try {
-                    console.log(`Trying Three.js source ${i + 1}/${threeSources.length}...`);
-                    await loadScript(threeSources[i]);
+                    console.log(`🌐 [${i + 1}/${threeSources.length}] Attempting: ${threeSources[i]}`);
                     
+                    const startTime = performance.now();
+                    await loadScript(threeSources[i]);
+                    const loadTime = performance.now() - startTime;
+                    
+                    console.log(`⏱️ Script loaded in ${loadTime.toFixed(2)}ms`);
+                    
+                    // Check if THREE object is available
                     if (typeof THREE !== 'undefined') {
-                        console.log(`✅ Three.js loaded from source ${i + 1} - Version: ${THREE.REVISION}`);
+                        console.log(`✅ SUCCESS: Three.js loaded from source ${i + 1}`);
+                        console.log(`📋 Three.js version: ${THREE.REVISION}`);
+                        console.log(`🔧 Available objects:`, Object.keys(THREE).slice(0, 10));
                         
-                        // Test WebGL support
+                        // Enhanced WebGL testing
                         const canvas = document.createElement('canvas');
                         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
                         if (gl) {
-                            console.log('✅ WebGL support confirmed');
+                            console.log('✅ WebGL Context: SUPPORTED');
+                            console.log('🎮 WebGL Renderer:', gl.getParameter(gl.RENDERER));
+                            console.log('💻 WebGL Vendor:', gl.getParameter(gl.VENDOR));
+                            console.log('📐 Max texture size:', gl.getParameter(gl.MAX_TEXTURE_SIZE));
                         } else {
-                            console.warn('⚠️ WebGL not supported - 3D visualization may fail');
+                            console.error('❌ WebGL Context: NOT SUPPORTED');
+                            throw new Error('WebGL not supported by browser');
                         }
                         
                         return;
                     } else {
-                        console.warn(`⚠️ THREE object not available after loading ${threeSources[i]}`);
+                        console.error(`❌ THREE object undefined after loading ${threeSources[i]}`);
+                        console.log('🔍 Global THREE:', typeof window.THREE);
+                        console.log('🔍 Window objects:', Object.keys(window).filter(k => k.includes('THREE')));
                     }
                 } catch (error) {
-                    console.log(`Source ${i + 1} failed: ${error.message}`);
+                    console.error(`❌ Source ${i + 1} failed:`, error.message);
+                    console.error('📄 Error details:', error);
                 }
             }
-            throw new Error('All Three.js sources failed');
+            
+            console.error('🚨 CRITICAL: All Three.js sources failed to load');
+            throw new Error('All Three.js sources failed - CDN issues or browser incompatibility');
         }
         
         async function loadOrbitControlsWithFallbacks() {
             const controlsSources = [
                 'https://unpkg.com/three@0.178.0/examples/js/controls/OrbitControls.js',
-                'https://unpkg.com/three@0.140.0/examples/js/controls/OrbitControls.js',
-                'https://cdn.jsdelivr.net/npm/three@0.178.0/examples/js/controls/OrbitControls.js'
+                'https://cdn.jsdelivr.net/npm/three@0.178.0/examples/js/controls/OrbitControls.js',
+                'https://unpkg.com/three@0.140.0/examples/js/controls/OrbitControls.js'
             ];
+            
+            console.log('🎛️ Loading OrbitControls from', controlsSources.length, 'sources...');
+            console.log('🔍 Pre-check: THREE available:', typeof THREE !== 'undefined');
             
             for (let i = 0; i < controlsSources.length; i++) {
                 try {
-                    console.log(`Trying OrbitControls source ${i + 1}/${controlsSources.length}...`);
-                    await loadScript(controlsSources[i]);
+                    console.log(`🌐 [${i + 1}/${controlsSources.length}] Attempting OrbitControls: ${controlsSources[i]}`);
                     
-                    if (typeof THREE !== 'undefined' && typeof THREE.OrbitControls !== 'undefined') {
-                        console.log(`✅ OrbitControls loaded from source ${i + 1}`);
-                        return;
+                    const startTime = performance.now();
+                    await loadScript(controlsSources[i]);
+                    const loadTime = performance.now() - startTime;
+                    
+                    console.log(`⏱️ OrbitControls script loaded in ${loadTime.toFixed(2)}ms`);
+                    
+                    // Enhanced checks for OrbitControls availability
+                    if (typeof THREE !== 'undefined') {
+                        console.log('🔍 THREE object confirmed available');
+                        
+                        if (typeof THREE.OrbitControls !== 'undefined') {
+                            console.log(`✅ SUCCESS: OrbitControls loaded from source ${i + 1}`);
+                            console.log('🔧 OrbitControls type:', typeof THREE.OrbitControls);
+                            return;
+                        } else {
+                            console.error(`❌ OrbitControls undefined after loading ${controlsSources[i]}`);
+                            console.log('🔍 Available THREE properties:', Object.keys(THREE).filter(k => k.includes('Controls')));
+                        }
                     } else {
-                        console.warn(`⚠️ OrbitControls not available after loading ${controlsSources[i]} (THREE exists: ${typeof THREE !== 'undefined'})`);
+                        console.error('❌ THREE object not available after OrbitControls load');
                     }
                 } catch (error) {
-                    console.log(`Controls source ${i + 1} failed: ${error.message}`);
+                    console.error(`❌ OrbitControls source ${i + 1} failed:`, error.message);
                 }
             }
-            throw new Error('All OrbitControls sources failed');
+            
+            console.error('🚨 CRITICAL: All OrbitControls sources failed');
+            throw new Error('All OrbitControls sources failed - controls will not work');
         }
         
         function loadScript(src) {
             return new Promise((resolve, reject) => {
-                console.log(`📦 Attempting to load script: ${src}`);
+                console.log(`📦 Loading script: ${src}`);
+                
+                // Check if script already exists
+                const existingScript = document.querySelector(`script[src="${src}"]`);
+                if (existingScript) {
+                    console.log(`🔁 Script already exists in DOM: ${src}`);
+                    resolve();
+                    return;
+                }
                 
                 const script = document.createElement('script');
                 script.src = src;
+                script.async = false; // Ensure proper loading order
+                
+                // Track loading states
+                let resolved = false;
                 
                 script.onload = () => {
-                    console.log(`✅ Successfully loaded: ${src}`);
-                    resolve();
+                    if (!resolved) {
+                        resolved = true;
+                        console.log(`✅ Script loaded successfully: ${src}`);
+                        console.log(`🔍 DOM scripts count: ${document.scripts.length}`);
+                        resolve();
+                    }
                 };
                 
                 script.onerror = (error) => {
-                    console.error(`❌ Failed to load script: ${src}`, error);
-                    reject(new Error(`Failed to load ${src}`));
+                    if (!resolved) {
+                        resolved = true;
+                        console.error(`❌ Script load error: ${src}`);
+                        console.error(`📄 Error event:`, error);
+                        reject(new Error(`Failed to load ${src}: ${error.message || 'Unknown error'}`));
+                    }
                 };
                 
-                // Add timeout for hanging requests
-                setTimeout(() => {
-                    if (!script.complete) {
-                        console.error(`⏰ Timeout loading script: ${src}`);
-                        reject(new Error(`Timeout loading ${src}`));
+                // Enhanced timeout with debugging
+                const timeoutId = setTimeout(() => {
+                    if (!resolved) {
+                        resolved = true;
+                        console.error(`⏰ TIMEOUT: Script loading took > 10s: ${src}`);
+                        console.error(`🔍 Script state - readyState: ${script.readyState}, complete: ${script.complete}`);
+                        reject(new Error(`Timeout loading ${src} after 10 seconds`));
                     }
                 }, 10000);
                 
+                // Clear timeout on success
+                script.addEventListener('load', () => clearTimeout(timeoutId));
+                script.addEventListener('error', () => clearTimeout(timeoutId));
+                
+                console.log(`🔗 Appending script to DOM head...`);
                 document.head.appendChild(script);
-                console.log(`🔄 Script element added to DOM: ${src}`);
+                console.log(`📋 Script element created and added to DOM`);
             });
         }
         
         function testBasicThreeJS() {
-            console.log('🧪 Testing basic Three.js functionality...');
+            console.log('🧪 TESTING basic Three.js functionality...');
             
             try {
                 // Test if THREE is available
                 if (typeof THREE === 'undefined') {
-                    console.error('❌ THREE object is undefined');
+                    console.error('❌ FATAL: THREE object is undefined');
+                    console.log('🔍 Available globals:', Object.keys(window).filter(k => k.toUpperCase().includes('THREE')));
                     return false;
                 }
                 
+                console.log('✅ THREE object confirmed available');
+                console.log('📖 THREE.REVISION:', THREE.REVISION);
+                console.log('🔧 THREE properties count:', Object.keys(THREE).length);
+                
                 // Test basic scene creation
+                console.log('🎬 Testing Scene creation...');
                 const testScene = new THREE.Scene();
-                console.log('✅ Scene creation successful');
+                console.log('✅ Scene creation: PASSED');
                 
                 // Test camera creation
+                console.log('📷 Testing Camera creation...');
                 const testCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-                console.log('✅ Camera creation successful');
+                console.log('✅ Camera creation: PASSED');
                 
-                // Test renderer creation
-                const testRenderer = new THREE.WebGLRenderer();
-                console.log('✅ WebGL renderer creation successful');
+                // Test renderer creation (most likely to fail)
+                console.log('🖼️ Testing WebGL Renderer creation...');
+                const testRenderer = new THREE.WebGLRenderer({ alpha: true });
+                console.log('✅ WebGL renderer creation: PASSED');
+                console.log('🔧 Renderer context:', testRenderer.getContext());
                 
-                // Test basic geometry
+                // Test basic geometry and materials
+                console.log('🔸 Testing Geometry and Material creation...');
                 const testGeometry = new THREE.BoxGeometry(1, 1, 1);
                 const testMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
                 const testMesh = new THREE.Mesh(testGeometry, testMaterial);
                 testScene.add(testMesh);
-                console.log('✅ Basic mesh creation successful');
+                console.log('✅ Geometry/Material/Mesh creation: PASSED');
                 
-                console.log('✅ All basic Three.js tests passed!');
+                // Test critical classes we'll need
+                console.log('🔍 Testing required Three.js classes...');
+                const requiredClasses = ['Vector3', 'Color', 'MeshPhysicalMaterial', 'SphereGeometry', 'Group'];
+                for (const className of requiredClasses) {
+                    if (typeof THREE[className] === 'undefined') {
+                        console.error(`❌ Missing required class: THREE.${className}`);
+                        return false;
+                    }
+                }
+                console.log('✅ All required classes available');
+                
+                console.log('🎆 ALL BASIC THREE.JS TESTS PASSED!');
                 return true;
                 
             } catch (error) {
-                console.error('❌ Basic Three.js test failed:', error);
+                console.error('❌ CRITICAL: Basic Three.js test failed');
+                console.error('🔴 Error type:', error.constructor.name);
+                console.error('🔴 Error message:', error.message);
+                console.error('📄 Full error:', error);
                 return false;
             }
         }
         
         function init() {
-            console.log('🎨 Initializing liquid glass universe...');
+            console.log('🎨 INITIALIZING liquid glass universe...');
+            console.log('🔍 Pre-init check - THREE available:', typeof THREE !== 'undefined');
             
             try {
-                // First, test basic Three.js functionality
+                // Enhanced basic functionality testing
+                console.log('🧪 Step 1: Testing basic Three.js functionality...');
                 if (!testBasicThreeJS()) {
-                    throw new Error('Basic Three.js test failed - aborting initialization');
+                    throw new Error('Basic Three.js test failed - core functionality unavailable');
                 }
+                console.log('✅ Basic Three.js test passed');
                 
                 // Initialize Three.js dependent variables
+                console.log('🧪 Step 2: Initializing Three.js dependent variables...');
                 raycaster = new THREE.Raycaster();
                 mouse = new THREE.Vector2();
-                console.log('✅ Three.js dependent variables initialized');
+                console.log('✅ Raycaster and mouse initialized');
                 
                 // Scene setup
+                console.log('🧪 Step 3: Creating Three.js scene...');
                 scene = new THREE.Scene();
                 scene.background = new THREE.Color(0x001144);
+                console.log('✅ Scene created with background color');
                 
                 // Camera setup
+                console.log('🧪 Step 4: Setting up camera...');
                 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 camera.position.set(0, 6, 12);
+                console.log('✅ Camera positioned at (0, 6, 12)');
                 
                 // Renderer setup
+                console.log('🧪 Step 5: Creating WebGL renderer...');
                 renderer = new THREE.WebGLRenderer({ 
                     antialias: true,
                     alpha: true,
                     powerPreference: "high-performance"
                 });
+                console.log('✅ WebGL renderer created successfully');
+                console.log('🔧 Renderer info - antialias:', renderer.capabilities.antialias);
+                console.log('🔧 Renderer info - maxTextures:', renderer.capabilities.maxTextures);
                 renderer.setSize(window.innerWidth, window.innerHeight);
+                console.log('📏 Renderer size set to:', window.innerWidth + 'x' + window.innerHeight);
+                
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                console.log('🖼️ Pixel ratio set to:', renderer.getPixelRatio());
+                
                 renderer.shadowMap.enabled = true;
                 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
                 renderer.toneMappingExposure = 1.2;
                 renderer.outputEncoding = THREE.sRGBEncoding;
+                console.log('🎨 Renderer settings configured (shadows, tone mapping, encoding)');
                 
                 // Add canvas to DOM with error checking
                 const container = document.getElementById('container');
@@ -876,33 +991,62 @@
                 }
                 
                 // Create HDR environment map
+                console.log('🌅 Step 6: Creating HDR environment map...');
                 createEnvironmentMap();
+                console.log('✅ Environment map created');
                 
                 // Enhanced controls
+                console.log('🎮 Step 7: Setting up orbit controls...');
+                if (typeof THREE.OrbitControls === 'undefined') {
+                    throw new Error('OrbitControls not available - loading failed');
+                }
                 controls = new THREE.OrbitControls(camera, renderer.domElement);
                 controls.enableDamping = true;
                 controls.dampingFactor = 0.05;
                 controls.maxDistance = 25;
                 controls.minDistance = 8;
                 controls.enablePan = false;
+                console.log('✅ Orbit controls configured');
                 
                 // Advanced lighting setup
+                console.log('💡 Step 8: Setting up advanced lighting...');
                 setupAdvancedLighting();
+                console.log('✅ Lighting system initialized');
                 
                 // Create liquid glass brand universe
+                console.log('🌌 Step 9: Creating liquid glass brand universe...');
                 createLiquidGlassBrandUniverse();
+                console.log('✅ Brand universe created');
                 
                 // Start animation
+                console.log('🎬 Step 10: Starting animation loop...');
                 animate();
+                console.log('✅ Animation loop started');
                 
                 // Hide loading
-                document.getElementById('loading').style.display = 'none';
-                console.log('✅ Liquid glass universe materialized successfully!');
+                console.log('📵 Step 11: Hiding loading screen...');
+                const loadingElement = document.getElementById('loading');
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                    console.log('✅ Loading screen hidden');
+                } else {
+                    console.warn('⚠️ Loading element not found');
+                }
+                
+                console.log('🎆 INITIALIZATION COMPLETE!');
+                console.log('✨ Liquid glass universe materialized successfully!');
+                console.log('📊 Final scene stats:');
+                console.log('  - Dimensions:', dimensions.length);
+                console.log('  - Connections:', connections.length);
+                console.log('  - Scene children:', scene.children.length);
                 
                 addRealtimeUpdate('3D Brand Universe initialized with liquid glass materials', 'system');
                 
             } catch (error) {
-                console.error('❌ 3D initialization failed:', error);
+                console.error('🚨 CRITICAL FAILURE: 3D initialization failed');
+                console.error('🔴 Error message:', error.message);
+                console.error('📄 Full error:', error);
+                console.error('📍 Stack trace:', error.stack);
                 showFallback();
             }
         }
