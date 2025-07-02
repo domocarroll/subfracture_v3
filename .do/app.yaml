@@ -1,0 +1,115 @@
+name: subfracture-production
+region: nyc1
+
+# Database Services
+databases:
+  - name: postgres
+    engine: PG
+    version: "15"
+    production: true
+    cluster_name: subfracture-db
+    
+  - name: redis
+    engine: REDIS
+    version: "7"
+    production: true
+    cluster_name: subfracture-cache
+
+# FastMCP Backend Service
+services:
+  - name: server
+    source_dir: /server
+    github:
+      repo: domocarroll/subfracture_v3
+      branch: main
+      deploy_on_push: true
+    build_command: pip install -r requirements.txt
+    run_command: python main.py
+    
+    environment_slug: python
+    instance_count: 1
+    instance_size_slug: professional-xs
+    
+    # Health check
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 60
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    
+    # Environment variables
+    envs:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        value: ${postgres.DATABASE_URL}
+      - key: REDIS_URL  
+        value: ${redis.DATABASE_URL}
+      - key: METRICS_PORT
+        value: "8000"
+      - key: MCP_PORT
+        value: "8001"
+      - key: PYTHONPATH
+        value: /app
+    
+    # Networking
+    http_port: 8001
+    routes:
+      - path: /
+    
+    # Resource limits
+    instance_count: 1
+    instance_size_slug: professional-xs
+    
+  # React Frontend Service  
+  - name: client
+    source_dir: /client
+    github:
+      repo: domocarroll/subfracture_v3
+      branch: main
+      deploy_on_push: true
+    build_command: npm ci && npm run build
+    
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    
+    # Environment variables
+    envs:
+      - key: VITE_MCP_SERVER_URL
+        value: wss://${APP_DOMAIN}/api/mcp
+      - key: VITE_AG_UI_SERVER_URL
+        value: https://${APP_DOMAIN}
+      - key: VITE_ENVIRONMENT
+        value: production
+    
+    # Static file serving
+    http_port: 80
+    routes:
+      - path: /
+    
+# Domain configuration
+domains:
+  - domain: subfracture.app
+    type: PRIMARY
+    wildcard: false
+    certificate_id: ""
+
+# Features
+features:
+  - buildpack-stack=heroku-22
+
+# Workers (optional background tasks)
+workers:
+  - name: metrics
+    source_dir: /server
+    run_command: python -m metrics
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: DATABASE_URL
+        value: ${postgres.DATABASE_URL}
+      - key: REDIS_URL
+        value: ${redis.DATABASE_URL}

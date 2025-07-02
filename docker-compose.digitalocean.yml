@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # FastMCP Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+      - "8000:8000"  # Metrics port
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - METRICS_PORT=8000
+      - MCP_PORT=8001
+      - PYTHONPATH=/app
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - subfracture
+
+  # React Frontend (for local development)
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_MCP_SERVER_URL=ws://localhost:8001
+      - VITE_AG_UI_SERVER_URL=http://localhost:8001
+      - VITE_ENVIRONMENT=development
+    depends_on:
+      - server
+    networks:
+      - subfracture
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=subfracture
+      - POSTGRES_USER=subfracture
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-subfracture_dev}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - subfracture
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - subfracture
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  subfracture:
+    driver: bridge
