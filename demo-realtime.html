@@ -366,30 +366,40 @@
         
         async function initializeHTTPPolling() {
             try {
-                console.log('🔗 Connecting to SUBFRACTURE Brand Intelligence API');
+                console.log('🔗 Connecting to SUBFRACTURE FastMCP Brand Intelligence...');
                 
-                // Initial connection test
-                const response = await fetch('/api/websocket-server/brand/demo-brand/state');
+                // Test MCP bridge connection first
+                const healthResponse = await fetch('/api/mcp-bridge');
+                console.log('MCP Bridge Health:', await healthResponse.text());
+                
+                // Initial connection test via MCP bridge
+                const response = await fetch('/api/mcp-bridge/brand/demo-brand/state');
                 if (response.ok) {
                     isConnected = true;
                     updateConnectionStatus(true);
-                    addRealtimeUpdate('Connected to Brand Intelligence Network', 'system');
+                    addRealtimeUpdate('Connected to FastMCP Brand Intelligence', 'system');
                     
                     const data = await response.json();
+                    console.log('FastMCP Response:', data);
+                    
                     if (data.state) {
                         loadBrandState(data.state);
+                        addRealtimeUpdate('Brand state loaded from FastMCP server', 'brand');
                     }
                     
-                    // Start polling for updates every 2 seconds
-                    setInterval(pollForUpdates, 2000);
+                    // Start polling for updates every 3 seconds (FastMCP integration)
+                    setInterval(pollForUpdates, 3000);
                 } else {
-                    throw new Error('API not responding');
+                    const errorData = await response.json();
+                    console.warn('MCP Bridge Response:', errorData);
+                    throw new Error(errorData.error || 'FastMCP API not responding');
                 }
                 
             } catch (error) {
-                console.error('❌ Failed to connect to API:', error);
+                console.error('❌ Failed to connect to FastMCP:', error);
+                addRealtimeUpdate('FastMCP connection failed - using fallback', 'error');
                 updateConnectionStatus(false);
-                setTimeout(initializeStatic, 1000);
+                setTimeout(initializeStatic, 2000);
             }
         }
         
@@ -397,22 +407,24 @@
             if (!isConnected) return;
             
             try {
-                const response = await fetch('/api/websocket-server/brand/demo-brand/state');
+                const response = await fetch('/api/mcp-bridge/brand/demo-brand/state');
                 if (response.ok) {
                     const data = await response.json();
                     if (data.state && data.state.lastUpdate) {
                         const lastUpdate = new Date(data.state.lastUpdate);
                         const timeSinceUpdate = Date.now() - lastUpdate.getTime();
                         
-                        // Only update if data is recent (within last 10 seconds)
-                        if (timeSinceUpdate < 10000) {
+                        // Only update if data is recent (within last 15 seconds)
+                        if (timeSinceUpdate < 15000) {
                             updateDimensionsInScene(data.state.dimensions);
-                            addRealtimeUpdate('Brand dimensions updated', 'data');
+                            addRealtimeUpdate('FastMCP brand dimensions updated', 'brand');
                         }
                     }
+                } else {
+                    console.warn('FastMCP polling failed:', response.status);
                 }
             } catch (error) {
-                console.warn('Polling error:', error.message);
+                console.warn('FastMCP polling error:', error.message);
             }
         }
         
@@ -593,51 +605,93 @@
             });
         });
         
-        function simulateWorkshopData() {
-            if (!ws || !isConnected) {
-                addRealtimeUpdate('Not connected - simulating locally', 'error');
-                return;
+        async function simulateWorkshopData() {
+            addRealtimeUpdate('Testing FastMCP workshop integration...', 'workshop');
+            
+            try {
+                // Test 1: Process workshop signals via FastMCP
+                const simulatedSignals = [
+                    { 
+                        category: 'market_position', 
+                        confidence: 0.85, 
+                        source: 'customer_feedback',
+                        context: 'Strong premium brand perception in sustainability sector'
+                    },
+                    { 
+                        category: 'value_proposition', 
+                        confidence: 0.78, 
+                        source: 'competitor_analysis',
+                        context: 'Unique technological differentiators identified'
+                    },
+                    { 
+                        category: 'emotional_landscape', 
+                        confidence: 0.92, 
+                        source: 'social_listening',
+                        context: 'Deep emotional connection with eco-conscious consumers'
+                    }
+                ];
+
+                const workshopResponse = await fetch('/api/mcp-bridge/workshop/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        brandId: brandId,
+                        signals: simulatedSignals,
+                        sessionId: 'demo-session-' + Date.now(),
+                        participantId: 'demo-user'
+                    })
+                });
+
+                if (workshopResponse.ok) {
+                    const workshopData = await workshopResponse.json();
+                    addRealtimeUpdate('FastMCP workshop signals processed successfully', 'workshop');
+                    console.log('Workshop MCP Response:', workshopData);
+                } else {
+                    const error = await workshopResponse.json();
+                    addRealtimeUpdate(`Workshop processing failed: ${error.message}`, 'error');
+                }
+
+                // Test 2: Evolve a brand dimension via FastMCP
+                const evolutionResponse = await fetch('/api/mcp-bridge/evolution/dimension', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        brandId: brandId,
+                        dimensionName: 'market_position',
+                        signalStrength: 0.88,
+                        reason: 'Workshop simulation: Enhanced positioning based on customer feedback'
+                    })
+                });
+
+                if (evolutionResponse.ok) {
+                    const evolutionData = await evolutionResponse.json();
+                    addRealtimeUpdate('FastMCP brand dimension evolved successfully', 'brand');
+                    console.log('Evolution MCP Response:', evolutionData);
+                    
+                    // Trigger visual update
+                    setTimeout(() => {
+                        pollForUpdates();
+                    }, 1000);
+                } else {
+                    const error = await evolutionResponse.json();
+                    addRealtimeUpdate(`Dimension evolution failed: ${error.message}`, 'error');
+                }
+
+                // Test 3: Analyze coherence via FastMCP
+                const coherenceResponse = await fetch('/api/mcp-bridge/coherence/' + brandId);
+                if (coherenceResponse.ok) {
+                    const coherenceData = await coherenceResponse.json();
+                    addRealtimeUpdate('FastMCP brand coherence analysis complete', 'cognitive');
+                    console.log('Coherence MCP Response:', coherenceData);
+                } else {
+                    const error = await coherenceResponse.json();
+                    addRealtimeUpdate(`Coherence analysis failed: ${error.message}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('FastMCP simulation error:', error);
+                addRealtimeUpdate(`FastMCP simulation error: ${error.message}`, 'error');
             }
-            
-            // Simulate workshop data processing
-            const simulatedData = {
-                brandId: brandId,
-                signals: [
-                    { category: 'market_position', confidence: 0.85, frequency: 3 },
-                    { category: 'value_proposition', confidence: 0.78, frequency: 2 },
-                    { category: 'emotional_landscape', confidence: 0.92, frequency: 4 }
-                ],
-                contradictions: [
-                    {
-                        signal1: { signal: 'Premium positioning' },
-                        signal2: { signal: 'Affordable pricing' },
-                        severity: 'high',
-                        conflictType: 'pricing_position'
-                    }
-                ],
-                gaps: [
-                    {
-                        category: 'target_audience',
-                        missingElement: 'demographic specificity',
-                        importance: 'critical'
-                    }
-                ]
-            };
-            
-            // Send to API endpoint
-            fetch('/api/workshop/process', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(simulatedData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                addRealtimeUpdate('Workshop data simulation sent successfully', 'workshop');
-            })
-            .catch(error => {
-                console.error('Error sending workshop data:', error);
-                addRealtimeUpdate('Error sending workshop data', 'error');
-            });
         }
         
         // Fallback initialization for when WebSocket is not available
