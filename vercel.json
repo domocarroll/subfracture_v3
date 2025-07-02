@@ -1,12 +1,4 @@
 {
-  "functions": {
-    "api/mcp-bridge.js": {
-      "runtime": "nodejs18.x"
-    },
-    "api/index.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "rewrites": [
     {
       "source": "/demo",
