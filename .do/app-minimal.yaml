@@ -23,7 +23,6 @@ services:
       - key: LOG_LEVEL
         value: "INFO"
     
-    run_command: python workshop_server.py
     
     health_check:
       http_path: /health
