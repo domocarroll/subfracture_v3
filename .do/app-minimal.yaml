@@ -1,0 +1,39 @@
+name: subfracture-production-optimized
+region: nyc1
+
+services:
+  - name: server
+    github:
+      repo: domocarroll/subfracture_v3
+      branch: master
+      deploy_on_push: true
+    
+    source_dir: /server
+    environment_slug: python
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    
+    envs:
+      - key: PORT
+        value: "8080"
+      - key: ENVIRONMENT
+        value: "production"
+      - key: PYTHONPATH
+        value: "/app"
+      - key: LOG_LEVEL
+        value: "INFO"
+    
+    build_command: pip install -r requirements-minimal.txt
+    run_command: python workshop_server.py
+    
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 30
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    
+    http_port: 8080
+    routes:
+      - path: /

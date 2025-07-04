@@ -1,0 +1,9 @@
+# Minimal FastMCP 2.0 Workshop Facilitator Dependencies
+# Core FastMCP 2.0 framework
+fastmcp>=2.9.0
+
+# Basic type validation (required by FastMCP)
+pydantic>=2.0.0
+
+# Optional: For future SQLite integration
+# sqlite3 is included with Python standard library
