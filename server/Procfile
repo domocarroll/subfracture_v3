@@ -1,1 +1,1 @@
-web: python workshop_server.py
+web: python hello.py
